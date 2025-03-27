@@ -221,6 +221,63 @@
               <pre class="whitespace-pre-wrap text-sm text-gray-700 font-mono">{{ analysisResults.optimizedVersion }}</pre>
             </div>
           </div>
+
+          <!-- Scores d'évaluation -->
+          <div class="mb-8">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Scores d'évaluation</h3>
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+              <table class="min-w-full">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Critère</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Note sur 5</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Barre de progression</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="(score, criterion) in analysisResults.scores" :key="criterion">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {{ criterion.charAt(0).toUpperCase() + criterion.slice(1).replace('_', ' ') }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {{ score.toFixed(1) }}/5
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full" 
+                             :style="{ width: `${(score/5)*100}%` }"
+                             :class="{
+                               'bg-red-600': score < 2.5,
+                               'bg-yellow-600': score >= 2.5 && score < 3.5,
+                               'bg-green-600': score >= 3.5
+                             }">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <!-- Score total -->
+                  <tr class="bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Score Total</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">
+                      {{ analysisResults.totalScore.toFixed(1) }}/20
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="bg-blue-600 h-2.5 rounded-full" 
+                             :style="{ width: `${(analysisResults.totalScore/20)*100}%` }"
+                             :class="{
+                               'bg-red-600': analysisResults.totalScore < 10,
+                               'bg-yellow-600': analysisResults.totalScore >= 10 && analysisResults.totalScore < 14,
+                               'bg-green-600': analysisResults.totalScore >= 14
+                             }">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

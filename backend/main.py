@@ -53,6 +53,8 @@ class CVAnalysisResponse(BaseModel):
     missingKeywords: list[str]
     alerts: list[str]
     optimizedVersion: str
+    scores: dict[str, float]  # Ajout des scores
+    totalScore: float  # Score total sur 20
 
 @app.post("/analyze-cv", response_model=CVAnalysisResponse)
 async def analyze_cv(
@@ -79,12 +81,18 @@ async def analyze_cv(
         raise HTTPException(status_code=400, detail="CV content is required")
 
     # Construction du prompt
-    prompt = f"""Tu es un expert ATS qui analyse les CV. Analyse ce CV et réponds UNIQUEMENT en JSON valide selon le format spécifié.
+    prompt = f"""Tu es un expert ATS qui analyse les CV. Analyse ce CV et attribue des notes sur 5 pour chaque critère.
 
 CV à analyser :
 {cv_text}
 
 {f'Offre d\'emploi :\n{job_offer}\n' if job_offer else ''}
+
+Évalue les critères suivants et donne une note sur 5 pour chacun :
+1. Titre (clarté et lisibilité)
+2. Format et structure du CV
+3. Présence des mots-clés essentiels
+4. Lisibilité (pas d'abréviations ou éléments illisibles)
 
 IMPORTANT: La version optimisée doit être une chaîne de caractères avec des retours à la ligne \\n.
 
@@ -96,13 +104,15 @@ Format STRICT de réponse (exemple) :
     "structureFeedback": "La structure est bien organisée avec des sections distinctes",
     "missingKeywords": ["java", "agile", "scrum"],
     "alerts": ["Attention aux abréviations comme API"],
-    "optimizedVersion": "John Doe\\nDéveloppeur Full Stack Senior\\n\\nEXPÉRIENCE PROFESSIONNELLE\\n..."
-}}
-
-Assure-toi que :
-1. La réponse est un JSON valide
-2. optimizedVersion est une chaîne de caractères avec des \\n pour les retours à la ligne
-3. Pas de texte avant ou après le JSON"""
+    "optimizedVersion": "John Doe\\nDéveloppeur Full Stack Senior\\n\\nEXPÉRIENCE PROFESSIONNELLE\\n...",
+    "scores": {{
+        "titre": 4.5,
+        "structure": 4.0,
+        "mots_cles": 3.5,
+        "lisibilite": 4.0
+    }},
+    "totalScore": 16.0
+}}"""
 
     try:
         # Appel à l'API via le client OpenAI
