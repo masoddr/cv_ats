@@ -216,7 +216,18 @@
 
           <!-- Version optimisée -->
           <div class="mb-8">
-            <h3 class="text-xl font-semibold text-gray-700 mb-4">Version optimisée suggérée</h3>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-semibold text-gray-700">Version optimisée suggérée</h3>
+              <button
+                @click="exportOptimizedVersion"
+                class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Exporter en .txt
+              </button>
+            </div>
             <div class="bg-gray-50 p-4 rounded-lg">
               <pre class="whitespace-pre-wrap text-sm text-gray-700 font-mono">{{ analysisResults.optimizedVersion }}</pre>
             </div>
@@ -276,6 +287,103 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          <!-- Points forts et améliorations -->
+          <div class="mb-8">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Analyse du contenu</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Points forts -->
+              <div class="bg-green-50 p-6 rounded-lg">
+                <h4 class="font-medium text-green-800 mb-4 flex items-center">
+                  <span class="text-xl mr-2">💪</span>
+                  Points forts
+                </h4>
+                <ul class="space-y-2">
+                  <li 
+                    v-for="(point, index) in analysisResults.contentFeedback.points_forts" 
+                    :key="index"
+                    class="flex items-start"
+                  >
+                    <span class="text-green-600 mr-2">✓</span>
+                    <span class="text-green-900">{{ point }}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Points d'amélioration -->
+              <div class="bg-yellow-50 p-6 rounded-lg">
+                <h4 class="font-medium text-yellow-800 mb-4 flex items-center">
+                  <span class="text-xl mr-2">💡</span>
+                  Suggestions d'amélioration
+                </h4>
+                <ul class="space-y-2">
+                  <li 
+                    v-for="(point, index) in analysisResults.contentFeedback.points_amelioration" 
+                    :key="index"
+                    class="flex items-start"
+                  >
+                    <span class="text-yellow-600 mr-2">→</span>
+                    <span class="text-yellow-900">{{ point }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Analyse détaillée des mots-clés -->
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-semibold text-gray-700">Analyse détaillée des mots-clés</h3>
+              <button
+                @click="exportKeywords"
+                class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Exporter l'analyse
+              </button>
+            </div>
+
+            <!-- Suggestions de formulation -->
+            <div class="bg-white p-6 rounded-lg shadow mb-4">
+              <h4 class="font-medium text-gray-800 mb-4">Suggestions de formulation alternatives</h4>
+              <div class="space-y-4">
+                <div 
+                  v-for="(alternatives, keyword) in analysisResults.keywordSuggestions" 
+                  :key="keyword"
+                  class="bg-gray-50 p-4 rounded-lg"
+                >
+                  <div class="font-medium text-gray-700 mb-2">{{ keyword }}</div>
+                  <div class="flex flex-wrap gap-2">
+                    <span 
+                      v-for="(alt, index) in alternatives" 
+                      :key="index"
+                      class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+                    >
+                      {{ alt }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Statistiques des mots-clés -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-blue-50 p-4 rounded-lg">
+                <div class="text-sm text-blue-600 uppercase tracking-wide font-semibold mb-2">Total mots-clés importants</div>
+                <div class="text-3xl font-bold text-blue-900">{{ analysisResults.topKeywords.length }}</div>
+              </div>
+              <div class="bg-green-50 p-4 rounded-lg">
+                <div class="text-sm text-green-600 uppercase tracking-wide font-semibold mb-2">Mots-clés présents</div>
+                <div class="text-3xl font-bold text-green-900">{{ analysisResults.presentKeywords.length }}</div>
+              </div>
+              <div class="bg-yellow-50 p-4 rounded-lg">
+                <div class="text-sm text-yellow-600 uppercase tracking-wide font-semibold mb-2">Mots-clés manquants</div>
+                <div class="text-3xl font-bold text-yellow-900">{{ analysisResults.missingKeywords.length }}</div>
+              </div>
             </div>
           </div>
         </div>
@@ -388,6 +496,75 @@ const analyzeCV = async () => {
     isAnalyzing.value = false
     console.log('Fin de l\'analyse')
   }
+}
+
+const exportOptimizedVersion = () => {
+  if (!analysisResults.value?.optimizedVersion) return
+
+  // Création du blob avec le contenu
+  const blob = new Blob([analysisResults.value.optimizedVersion], { type: 'text/plain' })
+  
+  // Création de l'URL du blob
+  const url = window.URL.createObjectURL(blob)
+  
+  // Création d'un lien temporaire pour le téléchargement
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'cv_optimise.txt'
+  
+  // Ajout du lien au document et simulation du clic
+  document.body.appendChild(link)
+  link.click()
+  
+  // Nettoyage
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
+}
+
+const exportKeywords = () => {
+  if (!analysisResults.value) return
+
+  const content = `ANALYSE DÉTAILLÉE DES MOTS-CLÉS DE VOTRE CV
+
+STATISTIQUES
+-----------
+Total mots-clés importants : ${analysisResults.value.topKeywords.length}
+Mots-clés présents : ${analysisResults.value.presentKeywords.length}
+Mots-clés manquants : ${analysisResults.value.missingKeywords.length}
+
+MOTS-CLÉS PRÉSENTS
+-----------------
+${analysisResults.value.presentKeywords.join(', ')}
+
+MOTS-CLÉS MANQUANTS
+-----------------
+${analysisResults.value.missingKeywords.join(', ')}
+
+SUGGESTIONS DE FORMULATION
+------------------------
+${Object.entries(analysisResults.value.keywordSuggestions)
+  .map(([keyword, alternatives]) => `${keyword}:\n  - ${alternatives.join('\n  - ')}`)
+  .join('\n\n')}
+
+POINTS FORTS
+-----------
+${analysisResults.value.contentFeedback.points_forts.map(point => `- ${point}`).join('\n')}
+
+SUGGESTIONS D'AMÉLIORATION
+------------------------
+${analysisResults.value.contentFeedback.points_amelioration.map(point => `- ${point}`).join('\n')}
+
+SCORE GLOBAL: ${analysisResults.value.totalScore.toFixed(1)}/20`
+
+  const blob = new Blob([content], { type: 'text/plain' })
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = 'analyse_complete_cv.txt'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
 }
 </script>
 

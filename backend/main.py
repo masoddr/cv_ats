@@ -50,11 +50,15 @@ class CVAnalysisResponse(BaseModel):
     titleFeedback: str
     hasGoodStructure: bool
     structureFeedback: str
+    topKeywords: list[str]
+    presentKeywords: list[str]
     missingKeywords: list[str]
+    keywordSuggestions: dict[str, list[str]]
     alerts: list[str]
+    contentFeedback: dict[str, list[str]]
     optimizedVersion: str
-    scores: dict[str, float]  # Ajout des scores
-    totalScore: float  # Score total sur 20
+    scores: dict[str, float]
+    totalScore: float
 
 @app.post("/analyze-cv", response_model=CVAnalysisResponse)
 async def analyze_cv(
@@ -81,35 +85,74 @@ async def analyze_cv(
         raise HTTPException(status_code=400, detail="CV content is required")
 
     # Construction du prompt
-    prompt = f"""Tu es un expert ATS qui analyse les CV. Analyse ce CV et attribue des notes sur 5 pour chaque critère.
+    prompt = f"""Tu es un expert ATS qui analyse les CV. Fais une analyse approfondie de ce CV.
 
 CV à analyser :
 {cv_text}
 
 {f'Offre d\'emploi :\n{job_offer}\n' if job_offer else ''}
 
-Évalue les critères suivants et donne une note sur 5 pour chacun :
-1. Titre (clarté et lisibilité)
-2. Format et structure du CV
-3. Présence des mots-clés essentiels
-4. Lisibilité (pas d'abréviations ou éléments illisibles)
+Réalise l'analyse suivante :
 
-IMPORTANT: La version optimisée doit être une chaîne de caractères avec des retours à la ligne \\n.
+1. MOTS-CLÉS (40 mots-clés essentiels)
+   - Liste les 40 mots-clés les plus importants pour ce type de poste
+   - Identifie ceux présents dans le CV
+   - Identifie ceux manquants
+   - Suggère des formulations alternatives pour les mots-clés manquants
 
-Format STRICT de réponse (exemple) :
+2. STRUCTURE ET FORMAT
+   - Vérifie la présence et la clarté du titre
+   - Analyse la hiérarchie des sections
+   - Vérifie la cohérence du formatage
+   - Identifie les éventuels problèmes de mise en page
+
+3. LISIBILITÉ ATS
+   - Détecte les abréviations à expliciter
+   - Identifie les éléments potentiellement illisibles (tableaux, images, zones de texte)
+   - Vérifie la compatibilité du format avec les ATS
+
+4. CONTENU ET IMPACT
+   - Évalue la pertinence des expériences décrites
+   - Vérifie la présence de résultats quantifiables
+   - Analyse l'utilisation de verbes d'action
+   - Identifie les réalisations clés
+
+5. NOTATION DÉTAILLÉE (sur 5)
+   - Titre et en-tête (clarté, visibilité)
+   - Structure et organisation
+   - Pertinence des mots-clés
+   - Lisibilité ATS
+   - Impact du contenu
+
+Format STRICT de réponse :
 {{
     "hasTitle": true,
     "titleFeedback": "Le titre est clair et bien visible",
     "hasGoodStructure": true,
-    "structureFeedback": "La structure est bien organisée avec des sections distinctes",
-    "missingKeywords": ["java", "agile", "scrum"],
-    "alerts": ["Attention aux abréviations comme API"],
-    "optimizedVersion": "John Doe\\nDéveloppeur Full Stack Senior\\n\\nEXPÉRIENCE PROFESSIONNELLE\\n...",
+    "structureFeedback": "La structure est bien organisée",
+    "topKeywords": ["mot1", "mot2", ..., "mot40"],
+    "presentKeywords": ["mot1", "mot3", ...],
+    "missingKeywords": ["mot2", "mot4", ...],
+    "keywordSuggestions": {{
+        "mot_manquant1": ["alternative1", "alternative2"],
+        "mot_manquant2": ["alternative1", "alternative2"]
+    }},
+    "alerts": [
+        "Attention aux abréviations",
+        "Suggestion d'amélioration 1",
+        "Suggestion d'amélioration 2"
+    ],
+    "contentFeedback": {{
+        "points_forts": ["point1", "point2", "point3"],
+        "points_amelioration": ["suggestion1", "suggestion2", "suggestion3"]
+    }},
+    "optimizedVersion": "...",
     "scores": {{
         "titre": 4.5,
         "structure": 4.0,
         "mots_cles": 3.5,
-        "lisibilite": 4.0
+        "lisibilite": 4.0,
+        "impact_contenu": 4.2
     }},
     "totalScore": 16.0
 }}"""
