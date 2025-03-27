@@ -2,7 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import fitz  # PyMuPDF
-from typing import Optional
+from typing import Optional, List, Dict, Union, Any
 import os
 from dotenv import load_dotenv
 import json
@@ -50,15 +50,19 @@ class CVAnalysisResponse(BaseModel):
     titleFeedback: str
     hasGoodStructure: bool
     structureFeedback: str
-    topKeywords: list[str]
-    presentKeywords: list[str]
-    missingKeywords: list[str]
-    keywordSuggestions: dict[str, list[str]]
-    alerts: list[str]
-    contentFeedback: dict[str, list[str]]
+    topKeywords: List[str]
+    presentKeywords: List[str]
+    missingKeywords: List[str]
+    keywordSuggestions: Dict[str, List[str]]
+    alerts: List[str]
+    contentFeedback: Dict[str, List[str]]
     optimizedVersion: str
-    scores: dict[str, float]
+    scores: Dict[str, float]
     totalScore: float
+    jobMatch: Optional[Dict[str, Union[float, List[str]]]] = None
+
+    class Config:
+        arbitrary_types_allowed = True
 
 @app.post("/analyze-cv", response_model=CVAnalysisResponse)
 async def analyze_cv(
@@ -84,13 +88,33 @@ async def analyze_cv(
     if not cv_text.strip():
         raise HTTPException(status_code=400, detail="CV content is required")
 
+    # Définition du template pour jobMatch
+    job_match_template = """{{
+        "score": 85.5,
+        "technicalMatch": 90.0,
+        "experienceMatch": 80.0,
+        "softSkillsMatch": 85.0,
+        "strengths": [
+            "Expertise technique en accord avec les besoins",
+            "Expérience en management d'équipe"
+        ],
+        "gaps": [
+            "Pas d'expérience mentionnée avec Kubernetes",
+            "Certification cloud manquante"
+        ],
+        "recommendations": [
+            "Mettre en avant votre expérience DevOps",
+            "Obtenir une certification AWS/Azure"
+        ]
+    }}""" if job_offer else "null"
+
     # Construction du prompt
-    prompt = f"""Tu es un expert ATS qui analyse les CV. Fais une analyse approfondie de ce CV.
+    prompt = f"""Tu es un expert ATS qui analyse les CV. Fais une analyse approfondie de ce CV{' et sa compatibilité avec l\'offre d\'emploi' if job_offer else ''}.
 
 CV à analyser :
 {cv_text}
 
-{f'Offre d\'emploi :\n{job_offer}\n' if job_offer else ''}
+{f'Offre d\'emploi à analyser :\n{job_offer}\n' if job_offer else ''}
 
 Réalise l'analyse suivante :
 
@@ -108,7 +132,7 @@ Réalise l'analyse suivante :
 
 3. LISIBILITÉ ATS
    - Détecte les abréviations à expliciter
-   - Identifie les éléments potentiellement illisibles (tableaux, images, zones de texte)
+   - Identifie les éléments potentiellement illisibles
    - Vérifie la compatibilité du format avec les ATS
 
 4. CONTENU ET IMPACT
@@ -117,12 +141,17 @@ Réalise l'analyse suivante :
    - Analyse l'utilisation de verbes d'action
    - Identifie les réalisations clés
 
-5. NOTATION DÉTAILLÉE (sur 5)
-   - Titre et en-tête (clarté, visibilité)
-   - Structure et organisation
-   - Pertinence des mots-clés
-   - Lisibilité ATS
-   - Impact du contenu
+{'''5. ANALYSE DE COMPATIBILITÉ AVEC L'OFFRE
+   - Évalue la correspondance technique (technologies, outils)
+   - Analyse l'adéquation de l'expérience
+   - Vérifie la correspondance des soft skills
+   - Identifie les points forts et les écarts
+   - Propose des recommandations spécifiques''' if job_offer else '5. NOTATION DÉTAILLÉE'}
+
+IMPORTANT : 
+- Le score total doit être sur 20 points maximum
+- Chaque score individuel doit être sur 5 points maximum
+- Les scores de compatibilité doivent être en pourcentage (0-100%)
 
 Format STRICT de réponse :
 {{
@@ -130,31 +159,31 @@ Format STRICT de réponse :
     "titleFeedback": "Le titre est clair et bien visible",
     "hasGoodStructure": true,
     "structureFeedback": "La structure est bien organisée",
-    "topKeywords": ["mot1", "mot2", ..., "mot40"],
-    "presentKeywords": ["mot1", "mot3", ...],
-    "missingKeywords": ["mot2", "mot4", ...],
+    "topKeywords": ["mot1", "mot2", "mot3"],
+    "presentKeywords": ["mot1", "mot3"],
+    "missingKeywords": ["mot2", "mot4"],
     "keywordSuggestions": {{
         "mot_manquant1": ["alternative1", "alternative2"],
         "mot_manquant2": ["alternative1", "alternative2"]
     }},
     "alerts": [
         "Attention aux abréviations",
-        "Suggestion d'amélioration 1",
-        "Suggestion d'amélioration 2"
+        "Suggestion d'amélioration 1"
     ],
     "contentFeedback": {{
         "points_forts": ["point1", "point2", "point3"],
-        "points_amelioration": ["suggestion1", "suggestion2", "suggestion3"]
+        "points_amelioration": ["suggestion1", "suggestion2"]
     }},
-    "optimizedVersion": "...",
+    "optimizedVersion": "Version optimisée du CV\\n avec des retours à la ligne\\n",
     "scores": {{
-        "titre": 4.5,
-        "structure": 4.0,
-        "mots_cles": 3.5,
-        "lisibilite": 4.0,
-        "impact_contenu": 4.2
+        "titre": 4.5,        # Sur 5 maximum
+        "structure": 4.0,    # Sur 5 maximum
+        "mots_cles": 3.5,    # Sur 5 maximum
+        "lisibilite": 4.0,   # Sur 5 maximum
+        "impact_contenu": 4.2 # Sur 5 maximum
     }},
-    "totalScore": 16.0
+    "totalScore": 16.0,      # Sur 20 maximum
+    "jobMatch": {job_match_template}
 }}"""
 
     try:
@@ -186,12 +215,46 @@ Format STRICT de réponse :
         
         try:
             analysis_result = json.loads(response_content)
-            # Vérification supplémentaire
+            
+            # Vérification et limitation du score total
+            if "totalScore" in analysis_result:
+                analysis_result["totalScore"] = min(20.0, float(analysis_result["totalScore"]))
+            
+            # Vérification des scores individuels
+            if "scores" in analysis_result:
+                for key in analysis_result["scores"]:
+                    analysis_result["scores"][key] = min(5.0, float(analysis_result["scores"][key]))
+
+            # Vérification des scores de compatibilité seulement si jobMatch existe et n'est pas null
+            if job_offer and analysis_result.get("jobMatch"):
+                if isinstance(analysis_result["jobMatch"], (int, float)):
+                    # Si jobMatch est un nombre, le convertir en structure complète
+                    score = float(analysis_result["jobMatch"])
+                    analysis_result["jobMatch"] = {
+                        "score": min(100.0, score),
+                        "technicalMatch": min(100.0, score),
+                        "experienceMatch": min(100.0, score),
+                        "softSkillsMatch": min(100.0, score),
+                        "strengths": [],
+                        "gaps": [],
+                        "recommendations": []
+                    }
+                elif isinstance(analysis_result["jobMatch"], dict):
+                    # Si jobMatch est un dictionnaire, limiter les scores à 100
+                    for key in ["score", "technicalMatch", "experienceMatch", "softSkillsMatch"]:
+                        if key in analysis_result["jobMatch"]:
+                            analysis_result["jobMatch"][key] = min(100.0, float(analysis_result["jobMatch"][key]))
+            else:
+                # Si pas d'offre d'emploi ou jobMatch est null
+                analysis_result["jobMatch"] = None
+
+            # Autres vérifications...
             if not isinstance(analysis_result["optimizedVersion"], str):
                 raise HTTPException(
                     status_code=500,
                     detail="optimizedVersion must be a string"
                 )
+
             logger.info("Analyse du CV réussie")
             return CVAnalysisResponse(**analysis_result)
         except json.JSONDecodeError as e:

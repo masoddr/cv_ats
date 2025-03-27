@@ -4,10 +4,10 @@
       <!-- Hero Section -->
       <div class="text-center py-16 md:py-24">
         <h1 class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-          Optimisez votre CV pour l'ère digitale
+          Optimisez votre CV 
         </h1>
         <p class="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-          Notre IA analyse votre CV et vous guide pour maximiser vos chances face aux systèmes de recrutement modernes.
+          Notre IA analyse votre CV et vous guide pour maximiser vos chances face aux ATS (Applicant Tracking Systems) qui filtrent automatiquement les candidatures.
         </p>
         
         <!-- Stats -->
@@ -59,6 +59,19 @@
 
             <!-- Import Content -->
             <div class="max-w-3xl mx-auto">
+              <!-- Reset Button -->
+              <div class="flex justify-end mb-4">
+                <button
+                  @click="resetForm"
+                  class="flex items-center px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+                >
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Réinitialiser
+                </button>
+              </div>
+
               <div v-if="importMode === 'text'" class="mb-6">
                 <textarea
                   v-model="cvContent"
@@ -177,59 +190,96 @@
             </div>
           </div>
 
-          <!-- Mots-clés manquants -->
-          <div v-if="analysisResults.missingKeywords.length" class="mb-8">
-            <div class="flex items-center mb-4">
-              <h3 class="text-xl font-semibold text-gray-700">Mots-clés manquants</h3>
-              <div class="relative ml-2 group">
-                <span class="cursor-help text-gray-400 hover:text-gray-600">ℹ️</span>
-                <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-sm text-white rounded-md absolute z-10 px-4 py-2 w-64">
-                  Ces mots-clés sont fréquemment recherchés par les recruteurs.
+          <!-- Analyse des mots-clés -->
+          <div class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-semibold text-gray-700">Analyse des mots-clés</h3>
+              <div class="flex gap-2">
+                <button
+                  @click="copyMissingKeywords"
+                  class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+                >
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                  </svg>
+                  Copier les mots-clés
+                </button>
+                <button
+                  @click="exportKeywords"
+                  class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                >
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Exporter l'analyse
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              <!-- Statistiques -->
+              <div class="bg-white p-6 rounded-lg shadow">
+                <h4 class="font-medium text-gray-800 mb-4">Vue d'ensemble</h4>
+                <div class="grid grid-cols-3 gap-4">
+                  <div class="text-center p-4 bg-blue-50 rounded-lg">
+                    <div class="text-2xl font-bold text-blue-600">{{ analysisResults.topKeywords.length }}</div>
+                    <div class="text-sm text-gray-600">Total</div>
+                  </div>
+                  <div class="text-center p-4 bg-green-50 rounded-lg">
+                    <div class="text-2xl font-bold text-green-600">{{ analysisResults.presentKeywords.length }}</div>
+                    <div class="text-sm text-gray-600">Présents</div>
+                  </div>
+                  <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                    <div class="text-2xl font-bold text-yellow-600">{{ analysisResults.missingKeywords.length }}</div>
+                    <div class="text-sm text-gray-600">Manquants</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mots-clés manquants -->
+              <div class="bg-yellow-50 p-6 rounded-lg">
+                <h4 class="font-medium text-yellow-800 mb-4 flex items-center">
+                  <span class="text-xl mr-2">⚠️</span>
+                  Mots-clés manquants prioritaires
+                </h4>
+                <div class="flex flex-wrap gap-2">
+                  <span 
+                    v-for="keyword in analysisResults.missingKeywords" 
+                    :key="keyword"
+                    class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm flex items-center group relative"
+                  >
+                    {{ keyword }}
+                    <span class="ml-2 cursor-pointer hover:text-yellow-600" @click="copyKeyword(keyword)">📋</span>
+                    <span class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap transition-opacity">
+                      Cliquer pour copier
+                    </span>
+                  </span>
                 </div>
               </div>
             </div>
-            <div class="flex flex-wrap gap-2">
-              <span 
-                v-for="keyword in analysisResults.missingKeywords" 
-                :key="keyword"
-                class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm"
-              >
-                {{ keyword }}
-              </span>
-            </div>
-          </div>
 
-          <!-- Alertes -->
-          <div v-if="analysisResults.alerts.length" class="mb-8">
-            <h3 class="text-xl font-semibold text-gray-700 mb-4">Points d'attention</h3>
-            <div class="space-y-2">
-              <div 
-                v-for="(alert, index) in analysisResults.alerts" 
-                :key="index"
-                class="flex items-start bg-red-50 p-4 rounded-lg"
-              >
-                <span class="text-red-500 mr-2">⚠️</span>
-                <p class="text-red-700">{{ alert }}</p>
+            <!-- Suggestions de formulation -->
+            <div class="bg-white p-6 rounded-lg shadow">
+              <h4 class="font-medium text-gray-800 mb-4">Suggestions de formulation alternatives</h4>
+              <div class="space-y-4">
+                <div 
+                  v-for="(alternatives, keyword) in analysisResults.keywordSuggestions" 
+                  :key="keyword"
+                  class="bg-gray-50 p-4 rounded-lg"
+                >
+                  <div class="font-medium text-gray-700 mb-2">{{ keyword }}</div>
+                  <div class="flex flex-wrap gap-2">
+                    <span 
+                      v-for="(alt, index) in alternatives" 
+                      :key="index"
+                      class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-blue-200 transition-colors duration-200"
+                      @click="copyKeyword(alt)"
+                    >
+                      {{ alt }}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <!-- Version optimisée -->
-          <div class="mb-8">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-xl font-semibold text-gray-700">Version optimisée suggérée</h3>
-              <button
-                @click="exportOptimizedVersion"
-                class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Exporter en .txt
-              </button>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-lg">
-              <pre class="whitespace-pre-wrap text-sm text-gray-700 font-mono">{{ analysisResults.optimizedVersion }}</pre>
             </div>
           </div>
 
@@ -332,58 +382,85 @@
             </div>
           </div>
 
-          <!-- Analyse détaillée des mots-clés -->
-          <div class="mb-8">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-xl font-semibold text-gray-700">Analyse détaillée des mots-clés</h3>
-              <button
-                @click="exportKeywords"
-                class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Exporter l'analyse
-              </button>
+          <!-- Section de compatibilité - affichée uniquement si une offre est fournie -->
+          <div v-if="analysisResults.jobMatch && jobOffer" class="mb-8">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Compatibilité avec l'offre</h3>
+            
+            <!-- Scores de compatibilité -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              <div class="bg-white p-4 rounded-lg shadow">
+                <div class="text-2xl font-bold text-blue-600 mb-1">{{ analysisResults.jobMatch.score }}%</div>
+                <div class="text-sm text-gray-600">Score global</div>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow">
+                <div class="text-2xl font-bold text-green-600 mb-1">{{ analysisResults.jobMatch.technicalMatch }}%</div>
+                <div class="text-sm text-gray-600">Technique</div>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow">
+                <div class="text-2xl font-bold text-purple-600 mb-1">{{ analysisResults.jobMatch.experienceMatch }}%</div>
+                <div class="text-sm text-gray-600">Expérience</div>
+              </div>
+              <div class="bg-white p-4 rounded-lg shadow">
+                <div class="text-2xl font-bold text-indigo-600 mb-1">{{ analysisResults.jobMatch.softSkillsMatch }}%</div>
+                <div class="text-sm text-gray-600">Soft Skills</div>
+              </div>
             </div>
 
-            <!-- Suggestions de formulation -->
-            <div class="bg-white p-6 rounded-lg shadow mb-4">
-              <h4 class="font-medium text-gray-800 mb-4">Suggestions de formulation alternatives</h4>
-              <div class="space-y-4">
-                <div 
-                  v-for="(alternatives, keyword) in analysisResults.keywordSuggestions" 
-                  :key="keyword"
-                  class="bg-gray-50 p-4 rounded-lg"
+            <!-- Analyse détaillée -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Points forts -->
+              <div class="bg-green-50 p-6 rounded-lg">
+                <h4 class="font-medium text-green-800 mb-4 flex items-center">
+                  <span class="text-xl mr-2">💪</span>
+                  Points forts
+                </h4>
+                <ul class="space-y-2">
+                  <li 
+                    v-for="(strength, index) in analysisResults.jobMatch.strengths" 
+                    :key="index"
+                    class="flex items-start"
+                  >
+                    <span class="text-green-600 mr-2">✓</span>
+                    <span class="text-green-900">{{ strength }}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Écarts -->
+              <div class="bg-yellow-50 p-6 rounded-lg">
+                <h4 class="font-medium text-yellow-800 mb-4 flex items-center">
+                  <span class="text-xl mr-2">⚠️</span>
+                  Points à améliorer
+                </h4>
+                <ul class="space-y-2">
+                  <li 
+                    v-for="(gap, index) in analysisResults.jobMatch.gaps" 
+                    :key="index"
+                    class="flex items-start"
+                  >
+                    <span class="text-yellow-600 mr-2">→</span>
+                    <span class="text-yellow-900">{{ gap }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Recommandations -->
+            <div class="mt-6 bg-blue-50 p-6 rounded-lg">
+              <h4 class="font-medium text-blue-800 mb-4 flex items-center">
+                <span class="text-xl mr-2">💡</span>
+                Recommandations pour cette offre
+              </h4>
+              <ul class="space-y-2">
+                <li 
+                  v-for="(rec, index) in analysisResults.jobMatch.recommendations" 
+                  :key="index"
+                  class="flex items-start"
                 >
-                  <div class="font-medium text-gray-700 mb-2">{{ keyword }}</div>
-                  <div class="flex flex-wrap gap-2">
-                    <span 
-                      v-for="(alt, index) in alternatives" 
-                      :key="index"
-                      class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-                    >
-                      {{ alt }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Statistiques des mots-clés -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="bg-blue-50 p-4 rounded-lg">
-                <div class="text-sm text-blue-600 uppercase tracking-wide font-semibold mb-2">Total mots-clés importants</div>
-                <div class="text-3xl font-bold text-blue-900">{{ analysisResults.topKeywords.length }}</div>
-              </div>
-              <div class="bg-green-50 p-4 rounded-lg">
-                <div class="text-sm text-green-600 uppercase tracking-wide font-semibold mb-2">Mots-clés présents</div>
-                <div class="text-3xl font-bold text-green-900">{{ analysisResults.presentKeywords.length }}</div>
-              </div>
-              <div class="bg-yellow-50 p-4 rounded-lg">
-                <div class="text-sm text-yellow-600 uppercase tracking-wide font-semibold mb-2">Mots-clés manquants</div>
-                <div class="text-3xl font-bold text-yellow-900">{{ analysisResults.missingKeywords.length }}</div>
-              </div>
+                  <span class="text-blue-600 mr-2">•</span>
+                  <span class="text-blue-900">{{ rec }}</span>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
@@ -454,6 +531,21 @@ const steps = [
 ]
 
 const currentStep = ref(0)
+
+const resetForm = () => {
+  // Réinitialisation des champs
+  cvContent.value = ''
+  jobOffer.value = ''
+  selectedFile.value = null
+  analysisResults.value = null
+  currentStep.value = 0
+
+  // Réinitialisation du mode d'import si nécessaire
+  importMode.value = 'text'
+
+  // Notification à l'utilisateur
+  showToast('info', 'Formulaire réinitialisé')
+}
 
 const canAnalyze = computed(() => {
   return importMode.value === 'text' ? cvContent.value.trim() !== '' : selectedFile.value !== null
@@ -598,6 +690,27 @@ SCORE GLOBAL: ${analysisResults.value.totalScore.toFixed(1)}/20`
   link.click()
   document.body.removeChild(link)
   window.URL.revokeObjectURL(url)
+}
+
+const copyKeyword = async (keyword) => {
+  try {
+    await navigator.clipboard.writeText(keyword)
+    showToast('success', 'Mot-clé copié !')
+  } catch (err) {
+    showToast('error', 'Erreur lors de la copie')
+  }
+}
+
+const copyMissingKeywords = async () => {
+  if (!analysisResults.value?.missingKeywords) return
+  
+  try {
+    const keywords = analysisResults.value.missingKeywords.join(', ')
+    await navigator.clipboard.writeText(keywords)
+    showToast('success', 'Mots-clés copiés !')
+  } catch (err) {
+    showToast('error', 'Erreur lors de la copie')
+  }
 }
 </script>
 
