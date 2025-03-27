@@ -409,10 +409,19 @@
         </div>
       </div>
     </div>
+    <Toast v-bind="toast" />
+    <ProgressSteps 
+      :steps="steps"
+      :currentStep="currentStep"
+    />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import Toast from '~/components/Toast.vue'
+import ProgressSteps from '~/components/ProgressSteps.vue'
+
 definePageMeta({
   layout: 'default'
 })
@@ -424,6 +433,27 @@ const selectedFile = ref(null)
 const fileInput = ref(null)
 const isAnalyzing = ref(false)
 const analysisResults = ref(null)
+
+const toast = ref({
+  isVisible: false,
+  type: 'info',
+  message: ''
+})
+
+const showToast = (type, message) => {
+  toast.value = { isVisible: true, type, message }
+  setTimeout(() => {
+    toast.value.isVisible = false
+  }, 3000)
+}
+
+const steps = [
+  'Import du CV',
+  'Analyse ATS',
+  'Résultats'
+]
+
+const currentStep = ref(0)
 
 const canAnalyze = computed(() => {
   return importMode.value === 'text' ? cvContent.value.trim() !== '' : selectedFile.value !== null
@@ -448,6 +478,7 @@ const analyzeCV = async () => {
   
   console.log('Début de l\'analyse...')
   isAnalyzing.value = true
+  currentStep.value = 1
   
   try {
     const formData = new FormData()
@@ -488,10 +519,12 @@ const analyzeCV = async () => {
     const data = await response.json()
     console.log('Réponse du backend:', data)
     analysisResults.value = data
+    currentStep.value = 2
+    showToast('success', 'Analyse terminée avec succès !')
 
   } catch (error) {
     console.error('Erreur détaillée:', error)
-    // TODO: Afficher le toast d'erreur
+    showToast('error', 'Une erreur est survenue lors de l\'analyse')
   } finally {
     isAnalyzing.value = false
     console.log('Fin de l\'analyse')
