@@ -21,7 +21,7 @@
             <div class="text-gray-600">Mots-clés analysés</div>
           </div>
           <div class="text-center hidden md:block">
-            <div class="text-3xl font-bold text-purple-600 mb-2">2min</div>
+            <div class="text-3xl font-bold text-purple-600 mb-2">1min</div>
             <div class="text-gray-600">Temps d'analyse</div>
           </div>
         </div>
@@ -509,6 +509,128 @@
       :steps="steps"
       :currentStep="currentStep"
     />
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200 mt-16">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <!-- À propos -->
+          <div>
+            <h3 class="text-gray-900 font-semibold mb-4">À propos</h3>
+            <p class="text-gray-600 text-sm">
+              CV ATS Optimizer vous aide à optimiser votre CV pour les systèmes de suivi des candidatures (ATS) grâce à l'intelligence artificielle.
+            </p>
+          </div>
+          
+          <!-- Liens utiles -->
+          <div>
+            <h3 class="text-gray-900 font-semibold mb-4">Liens utiles</h3>
+            <ul class="space-y-2">
+              <li>
+                <NuxtLink to="/guide" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
+                  Guide d'utilisation
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/faq" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
+                  FAQ
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+          
+          <!-- Légal -->
+          <div>
+            <h3 class="text-gray-900 font-semibold mb-4">Informations légales</h3>
+            <ul class="space-y-2">
+              <li>
+                <NuxtLink to="/cgu" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
+                  Conditions générales d'utilisation
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/privacy" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
+                  Politique de confidentialité
+                </NuxtLink>
+              </li>
+              <li>
+                <NuxtLink to="/legal" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
+                  Mentions légales
+                </NuxtLink>
+              </li>
+            </ul>
+          </div>
+          
+          <!-- Contact -->
+          <div>
+            <h3 class="text-gray-900 font-semibold mb-4">Contact</h3>
+            <!-- Formulaire de contact -->
+            <form @submit.prevent="sendContactForm" class="space-y-4">
+              <div>
+                <input
+                  v-model="contactForm.name"
+                  type="text"
+                  placeholder="Votre nom"
+                  class="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div>
+                <input
+                  v-model="contactForm.email"
+                  type="email"
+                  placeholder="Votre email"
+                  class="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+              <div>
+                <textarea
+                  v-model="contactForm.message"
+                  placeholder="Votre message"
+                  rows="3"
+                  class="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  required
+                ></textarea>
+              </div>
+              <button
+                type="submit"
+                :disabled="isSubmitting"
+                class="w-full px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50"
+              >
+                {{ isSubmitting ? 'Envoi...' : 'Envoyer' }}
+              </button>
+            </form>
+
+            <!-- Informations de contact -->
+            <div class="mt-4 space-y-2">
+              <li class="flex items-center text-gray-600 text-sm">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <a href="mailto:ouaddour.massyl@gmail.com" class="hover:text-blue-600 transition-colors duration-200">
+                  ouaddour.massyl@gmail.com
+                </a>
+              </li>
+              <li class="flex items-center text-gray-600 text-sm">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Toulouse, France
+              </li>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Copyright -->
+        <div class="border-t border-gray-200 mt-8 pt-8 text-center">
+          <p class="text-gray-500 text-sm">
+            © {{ new Date().getFullYear() }} CV ATS Optimizer. Tous droits réservés.
+          </p>
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -728,6 +850,40 @@ const copyMissingKeywords = async () => {
     showToast('success', 'Mots-clés copiés !')
   } catch (err) {
     showToast('error', 'Erreur lors de la copie')
+  }
+}
+
+const contactForm = ref({
+  name: '',
+  email: '',
+  message: ''
+})
+
+const isSubmitting = ref(false)
+
+const sendContactForm = async () => {
+  isSubmitting.value = true
+  try {
+    // Création du contenu de l'email avec mailto
+    const subject = `Contact CV ATS Optimizer - ${contactForm.value.name}`
+    const body = `Message de : ${contactForm.value.name}\nEmail : ${contactForm.value.email}\n\n${contactForm.value.message}`
+    const mailtoLink = `mailto:ouaddour.massyl@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    
+    // Ouverture du client mail
+    window.location.href = mailtoLink
+    
+    // Réinitialisation du formulaire
+    contactForm.value = {
+      name: '',
+      email: '',
+      message: ''
+    }
+    
+    showToast('info', 'Votre client mail a été ouvert. N\'oubliez pas d\'envoyer le message !')
+  } catch (error) {
+    showToast('error', 'Erreur lors de l\'ouverture de votre client mail')
+  } finally {
+    isSubmitting.value = false
   }
 }
 </script>
