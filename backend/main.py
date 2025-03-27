@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import json
 from openai import OpenAI
 import logging
+from httpx import HTTPStatusError
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -264,9 +265,19 @@ Format STRICT de réponse :
                 detail=f"Error parsing JSON response: {str(e)}"
             )
 
+    except HTTPStatusError as e:
+        if e.response.status_code == 429:
+            raise HTTPException(
+                status_code=429,
+                detail="Limite de requêtes atteinte. Veuillez réessayer dans quelques minutes."
+            )
+        raise HTTPException(
+            status_code=500,
+            detail="Une erreur est survenue lors de l'analyse"
+        )
     except Exception as e:
         logger.error(f"Erreur lors de l'analyse: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail=f"Error during CV analysis: {str(e)}"
+            detail="Une erreur inattendue est survenue"
         ) 

@@ -1,45 +1,274 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/80 dark:bg-gray-950/90 backdrop-blur-sm border-b border-gray-100 dark:border-gray-800">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo/Brand -->
+          <div class="flex items-center">
+            <a href="/" class="text-xl font-bold text-gray-900 dark:text-white">
+              CV ATS Optimizer
+            </a>
+          </div>
+
+          <!-- Navigation Items -->
+          <div class="flex items-center space-x-4">
+            <!-- Language Switcher -->
+            <div class="flex items-center space-x-2 border-r border-gray-200 dark:border-gray-700 pr-4">
+              <button 
+                @click="switchLanguage('fr')"
+                :class="[
+                  'px-2 py-1 rounded-md text-sm font-medium transition-colors duration-200',
+                  locale === 'fr' 
+                    ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900' 
+                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                ]"
+              >
+                FR
+              </button>
+              <button 
+                @click="switchLanguage('en')"
+                :class="[
+                  'px-2 py-1 rounded-md text-sm font-medium transition-colors duration-200',
+                  locale === 'en' 
+                    ? 'bg-gray-900 text-white' 
+                    : 'text-gray-600 hover:text-gray-900'
+                ]"
+              >
+                EN
+              </button>
+            </div>
+
+            <!-- Dark Mode Toggle -->
+            <button 
+              @click="toggleDarkMode"
+              class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+              :title="isDarkMode ? 'Passer en mode clair' : 'Passer en mode sombre'"
+            >
+              <!-- Sun icon for dark mode -->
+              <svg 
+                v-if="isDarkMode"
+                class="w-5 h-5 text-gray-600" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+              </svg>
+              <!-- Moon icon for light mode -->
+              <svg 
+                v-else
+                class="w-5 h-5 text-gray-600" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Hero Section -->
-      <div class="text-center py-16 md:py-24">
-        <h1 class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
-          Optimisez votre CV 
-        </h1>
-        <p class="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-          Notre IA analyse votre CV et vous guide pour maximiser vos chances face aux ATS (Applicant Tracking Systems) qui filtrent automatiquement les candidatures.
-        </p>
-        
-        <!-- Stats -->
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 max-w-3xl mx-auto mb-16">
-          <div class="text-center">
-            <div class="text-3xl font-bold text-blue-600 mb-2">98%</div>
-            <div class="text-gray-600">Taux de détection</div>
-          </div>
-          <div class="text-center">
-            <div class="text-3xl font-bold text-indigo-600 mb-2">40+</div>
-            <div class="text-gray-600">Mots-clés analysés</div>
-          </div>
-          <div class="text-center hidden md:block">
-            <div class="text-3xl font-bold text-purple-600 mb-2">1min</div>
-            <div class="text-gray-600">Temps d'analyse</div>
+      <div class="text-center flex flex-col justify-center py-16 md:py-20 dark:text-white">
+        <!-- New Badge -->
+        <div class="flex justify-center mb-8">
+          <div class="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
+            <span class="flex items-center text-orange-500 mr-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a1 1 0 0 1 .81.41l2.59 3.24a1 1 0 0 1-.04 1.32L10 12l-3.36-5.03a1 1 0 0 1-.04-1.32l2.59-3.24A1 1 0 0 1 10 2Z" />
+              </svg>
+            </span>
+            <span class="text-sm font-medium text-gray-800 dark:text-gray-100">New:</span>
+            <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">Optimisez votre CV avec l'IA</span>
           </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="bg-white rounded-2xl shadow-xl p-8 mb-16 relative overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-transparent opacity-50"></div>
+        <h1 class="text-4xl md:text-7xl font-bold mb-8 text-gray-900 dark:text-white">
+          Votre CV optimisé pour les 
+          <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            ATS
+          </span>
+        </h1>
+
+        <div class="inline-block px-4 py-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-100 dark:border-gray-700 rounded-full font-medium text-gray-600 dark:text-gray-300 mb-8">
+          ✨ 100% Gratuit - Aucune inscription requise
+        </div>
+
+        <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-16 max-w-2xl mx-auto leading-relaxed">
+          Notre IA analyse votre CV et vous guide pour maximiser vos chances face aux ATS (Applicant Tracking Systems) qui filtrent automatiquement les candidatures.
+        </p>
+
+        <!-- CTA Button -->
+        <div class="mb-24">
+          <button
+            @click="scrollToAnalysis"
+            class="group px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium text-lg transition-all duration-300 flex items-center justify-center mx-auto"
+          >
+            <span class="flex items-center justify-center group-hover:translate-x-1 transition-transform duration-300">
+              Commencer l'analyse
+              <svg 
+                class="w-5 h-5 ml-2"
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  stroke-linecap="round" 
+                  stroke-linejoin="round" 
+                  stroke-width="2" 
+                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                />
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- How it works Section -->
+      <div class="text-center flex flex-col justify-center py-16 md:py-20">
+        <h2 class="text-4xl md:text-7xl font-bold mb-8 text-gray-900 dark:text-white">
+          Comment ça 
+          <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            marche ?
+          </span>
+        </h2>
+        
+        <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-16 max-w-2xl mx-auto leading-relaxed">
+          Trois étapes simples pour optimiser votre CV et augmenter vos chances d'être sélectionné.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <!-- Step 1 -->
+          <div 
+            class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-8 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+            @click="importMode = 'text'"
+          >
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-center mb-4 text-gray-800 dark:text-white">1. Importez votre CV</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-center text-lg">
+              Copiez-collez votre CV ou uploadez-le au format PDF
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div 
+            class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-8 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+            @click="$refs.jobOfferInput?.focus()"
+          >
+            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+              <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-center mb-4 text-gray-800 dark:text-white">2. Ajoutez l'offre d'emploi (optionnel)</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-center text-lg">
+              Copiez-collez le descriptif du poste pour une analyse personnalisée
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-8 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1">
+            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-center mb-4 text-gray-800 dark:text-white">3. Obtenez des conseils</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-center text-lg">
+              Recevez une analyse détaillée et des suggestions d'amélioration
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Section -->
+      <div class="text-center flex flex-col justify-center py-16 md:py-20">
+        <h2 class="text-4xl md:text-7xl font-bold mb-8 text-gray-900 dark:text-white">
+          Nos 
+          <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            avantages
+          </span>
+        </h2>
+        
+        <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-16 max-w-2xl mx-auto leading-relaxed">
+          Des fonctionnalités puissantes pour optimiser votre candidature.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-8 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+              <span class="text-2xl">🎯</span>
+            </div>
+            <h3 class="text-2xl font-bold text-center mb-4 text-gray-800 dark:text-white">Analyse ATS</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-center text-lg">
+              Vérification de la compatibilité avec les systèmes de recrutement
+            </p>
+          </div>
+
+          <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-8 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1">
+            <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+              <span class="text-2xl">💡</span>
+            </div>
+            <h3 class="text-2xl font-bold text-center mb-4 text-gray-800 dark:text-white">Recommandations</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-center text-lg">
+              Suggestions d'amélioration personnalisées
+            </p>
+          </div>
+
+          <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-8 rounded-2xl border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-1">
+            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-6 mx-auto">
+              <span class="text-2xl">⚡</span>
+            </div>
+            <h3 class="text-2xl font-bold text-center mb-4 text-gray-800 dark:text-white">Instantané</h3>
+            <p class="text-gray-600 dark:text-gray-300 text-center text-lg">
+              Résultats en quelques secondes
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content with ID for scrolling -->
+      <div id="analysis-section" class="scroll-mt-16">
+        <div class="text-center flex flex-col justify-center py-16 md:py-20">
+          <h2 class="text-4xl md:text-7xl font-bold mb-8 text-gray-900 dark:text-white">
+            Analysez votre 
+            <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              CV
+            </span>
+          </h2>
           
-          <!-- Import Tabs -->
-          <div class="relative">
-            <div class="flex justify-center space-x-4 mb-8">
+          <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-16 max-w-2xl mx-auto leading-relaxed">
+            Importez votre CV et obtenez une analyse détaillée en quelques secondes.
+          </p>
+          
+          <div class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-8 rounded-2xl border border-gray-100 dark:border-gray-700 max-w-4xl mx-auto w-full">
+            <!-- Import Tabs -->
+            <div class="flex justify-center space-x-6 mb-12">
               <button 
                 @click="importMode = 'text'"
                 :class="[
-                  'px-6 py-3 rounded-full text-sm font-medium transition-all duration-200',
+                  'px-8 py-4 rounded-full text-base font-medium transition-all duration-300',
                   importMode === 'text' 
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-gray-900 dark:bg-blue-600 text-white shadow-lg'
+                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
                 ]"
               >
                 Copier-coller
@@ -47,10 +276,10 @@
               <button 
                 @click="importMode = 'file'"
                 :class="[
-                  'px-6 py-3 rounded-full text-sm font-medium transition-all duration-200',
+                  'px-8 py-4 rounded-full text-base font-medium transition-all duration-300',
                   importMode === 'file' 
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-200'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    ? 'bg-gray-900 dark:bg-blue-600 text-white shadow-lg'
+                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700'
                 ]"
               >
                 Upload PDF
@@ -58,35 +287,23 @@
             </div>
 
             <!-- Import Content -->
-            <div class="max-w-3xl mx-auto">
-              <!-- Reset Button -->
-              <div class="flex justify-end mb-4">
-                <button
-                  @click="resetForm"
-                  class="flex items-center px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-200"
-                >
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  Réinitialiser
-                </button>
-              </div>
-
-              <div v-if="importMode === 'text'" class="mb-6">
+            <div class="max-w-2xl mx-auto">
+              <!-- Text Import -->
+              <div v-if="importMode === 'text'" class="space-y-6">
                 <textarea
                   v-model="cvContent"
-                  rows="12"
-                  class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none shadow-sm transition-all duration-200"
-                  placeholder="Copiez-collez le texte de votre CV ici..."
+                  placeholder="Collez le contenu de votre CV ici..."
+                  class="w-full h-64 p-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 ></textarea>
               </div>
 
-              <div v-else class="mb-6">
+              <!-- File Import -->
+              <div v-else class="space-y-6">
                 <div 
-                  class="border-2 border-dashed border-gray-200 rounded-xl p-12 text-center hover:border-blue-500 transition-all duration-200 cursor-pointer bg-gray-50"
+                  class="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center hover:border-blue-500 transition-colors cursor-pointer bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm"
+                  @click="$refs.fileInput.click()"
                   @dragover.prevent
                   @drop.prevent="handleFileDrop"
-                  @click="$refs.fileInput.click()"
                 >
                   <input
                     ref="fileInput"
@@ -95,547 +312,540 @@
                     class="hidden"
                     @change="handleFileSelect"
                   >
-                  <div v-if="selectedFile">
-                    <div class="text-blue-600 font-medium mb-2">{{ selectedFile.name }}</div>
-                    <button 
-                      @click.stop="selectedFile = null"
-                      class="text-red-500 text-sm hover:text-red-600"
-                    >
-                      Supprimer
-                    </button>
+                  <div v-if="!selectedFile">
+                    <svg class="w-16 h-16 mx-auto text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p class="text-gray-600 dark:text-gray-300 text-lg">Glissez votre fichier PDF ici ou cliquez pour sélectionner</p>
                   </div>
-                  <div v-else>
-                    <div class="mx-auto w-16 h-16 mb-4 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
-                      <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                      </svg>
-                    </div>
-                    <p class="text-gray-600 mb-1">Glissez votre fichier ici ou cliquez pour sélectionner</p>
-                    <p class="text-gray-400 text-sm">Format PDF uniquement</p>
+                  <div v-else class="text-blue-600 font-medium">
+                    {{ selectedFile.name }}
                   </div>
                 </div>
               </div>
 
               <!-- Job Offer Input -->
-              <div class="mb-8">
+              <div class="mt-8">
                 <textarea
+                  ref="jobOfferInput"
                   v-model="jobOffer"
-                  rows="4"
-                  class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none shadow-sm transition-all duration-200"
                   placeholder="Pour une analyse plus pertinente, collez l'offre d'emploi ici (optionnel)..."
+                  class="w-full h-32 p-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 rounded-xl resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 ></textarea>
               </div>
 
               <!-- Analyze Button -->
-              <button
-                @click="analyzeCV"
-                :disabled="!canAnalyze || isAnalyzing"
-                class="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-blue-200/50 hover:shadow-xl hover:shadow-blue-300/50 transform hover:-translate-y-0.5"
-              >
-                <span v-if="isAnalyzing" class="flex items-center justify-center">
-                  <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Analyse en cours...
-                </span>
-                <span v-else class="flex items-center">
-                  <svg 
-                    class="w-5 h-5 mr-2" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path 
-                      stroke-linecap="round" 
-                      stroke-linejoin="round" 
-                      stroke-width="2" 
-                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                    />
-                  </svg>
-                  {{ jobOffer.trim() 
-                    ? 'Analyser mon CV et sa compatibilité' 
-                    : 'Analyser mon CV' 
-                  }}
-                </span>
-              </button>
+              <div class="mt-8 flex justify-center">
+                <button
+                  @click="analyzeCV"
+                  :disabled="!canAnalyze || isAnalyzing"
+                  class="group relative px-8 py-4 bg-gray-900 dark:bg-blue-600 hover:bg-gray-800 dark:hover:bg-blue-700 text-white rounded-xl font-medium text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
+                >
+                  <!-- Badge Gratuit -->
+                  <span class="absolute -top-2 -right-2 px-2 py-1 bg-green-500 text-white text-xs rounded-full">
+                    Gratuit
+                  </span>
+                  
+                  <!-- Loading State -->
+                  <span v-if="isAnalyzing" class="flex items-center justify-center">
+                    <svg class="animate-spin w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Analyse en cours...
+                  </span>
+                  
+                  <!-- Normal State -->
+                  <span v-else class="flex items-center justify-center group-hover:translate-x-1 transition-transform duration-300">
+                    {{ jobOffer.trim() ? 'Analyser mon CV et sa compatibilité' : 'Analyser mon CV' }}
+                    <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div v-if="analysisResults" class="bg-white p-6 rounded-xl shadow-lg animate-fadeIn">
+        <h2 class="text-2xl font-bold mb-6 text-gray-800">Résultats de l'analyse</h2>
+        
+        <!-- Format et Structure -->
+        <div class="mb-8">
+          <div class="flex items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-700">Format et Structure</h3>
+            <div class="relative ml-2 group">
+              <span class="cursor-help text-gray-400 hover:text-gray-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                </svg>
+              </span>
+              <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-sm text-white rounded-md absolute z-10 px-4 py-2 w-64 bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2">
+                La structure de votre CV est cruciale pour les systèmes ATS.
+                <div class="absolute w-2 h-2 bg-gray-800 transform rotate-45 left-1/2 -translate-x-1/2 -bottom-1"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Titre et Structure -->
+          <div class="space-y-4">
+            <div class="flex items-start">
+              <div :class="analysisResults.hasTitle ? 'text-green-500' : 'text-red-500'" class="mr-2 mt-1">
+                {{ analysisResults.hasTitle ? '✓' : '✗' }}
+              </div>
+              <div>
+                <p class="font-medium">Titre</p>
+                <p class="text-gray-600 text-sm">{{ analysisResults.titleFeedback }}</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div :class="analysisResults.hasGoodStructure ? 'text-green-500' : 'text-red-500'" class="mr-2 mt-1">
+                {{ analysisResults.hasGoodStructure ? '✓' : '✗' }}
+              </div>
+              <div>
+                <p class="font-medium">Structure</p>
+                <p class="text-gray-600 text-sm">{{ analysisResults.structureFeedback }}</p>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Results Section -->
-        <div v-if="analysisResults" class="bg-white p-6 rounded-xl shadow-lg animate-fadeIn">
-          <h2 class="text-2xl font-bold mb-6 text-gray-800">Résultats de l'analyse</h2>
-          
-          <!-- Format et Structure -->
-          <div class="mb-8">
-            <div class="flex items-center mb-4">
-              <h3 class="text-xl font-semibold text-gray-700">Format et Structure</h3>
-              <div class="relative ml-2 group">
-                <span class="cursor-help text-gray-400 hover:text-gray-600">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-                  </svg>
-                </span>
-                <div class="opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-sm text-white rounded-md absolute z-10 px-4 py-2 w-64 bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2">
-                  La structure de votre CV est cruciale pour les systèmes ATS.
-                  <div class="absolute w-2 h-2 bg-gray-800 transform rotate-45 left-1/2 -translate-x-1/2 -bottom-1"></div>
+        <!-- Analyse des mots-clés -->
+        <div class="mb-8">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-semibold text-gray-700">Analyse des mots-clés</h3>
+            <div class="flex gap-2">
+              <button
+                @click="copyMissingKeywords"
+                class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+              >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                </svg>
+                Copier les mots-clés
+              </button>
+              <button
+                @click="exportKeywords"
+                class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
+              >
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Exporter l'analyse
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <!-- Statistiques -->
+            <div class="bg-white p-6 rounded-lg shadow">
+              <h4 class="font-medium text-gray-800 mb-4">Vue d'ensemble</h4>
+              <div class="grid grid-cols-3 gap-4">
+                <div class="text-center p-4 bg-blue-50 rounded-lg">
+                  <div class="text-2xl font-bold text-blue-600">{{ analysisResults.topKeywords.length }}</div>
+                  <div class="text-sm text-gray-600">Total</div>
+                </div>
+                <div class="text-center p-4 bg-green-50 rounded-lg">
+                  <div class="text-2xl font-bold text-green-600">{{ analysisResults.presentKeywords.length }}</div>
+                  <div class="text-sm text-gray-600">Présents</div>
+                </div>
+                <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                  <div class="text-2xl font-bold text-yellow-600">{{ analysisResults.missingKeywords.length }}</div>
+                  <div class="text-sm text-gray-600">Manquants</div>
                 </div>
               </div>
             </div>
 
-            <!-- Titre et Structure -->
-            <div class="space-y-4">
-              <div class="flex items-start">
-                <div :class="analysisResults.hasTitle ? 'text-green-500' : 'text-red-500'" class="mr-2 mt-1">
-                  {{ analysisResults.hasTitle ? '✓' : '✗' }}
-                </div>
-                <div>
-                  <p class="font-medium">Titre</p>
-                  <p class="text-gray-600 text-sm">{{ analysisResults.titleFeedback }}</p>
-                </div>
-              </div>
-              
-              <div class="flex items-start">
-                <div :class="analysisResults.hasGoodStructure ? 'text-green-500' : 'text-red-500'" class="mr-2 mt-1">
-                  {{ analysisResults.hasGoodStructure ? '✓' : '✗' }}
-                </div>
-                <div>
-                  <p class="font-medium">Structure</p>
-                  <p class="text-gray-600 text-sm">{{ analysisResults.structureFeedback }}</p>
-                </div>
+            <!-- Mots-clés manquants -->
+            <div class="bg-yellow-50 p-6 rounded-lg">
+              <h4 class="font-medium text-yellow-800 mb-4 flex items-center">
+                <span class="text-xl mr-2">⚠️</span>
+                Mots-clés manquants prioritaires
+              </h4>
+              <div class="flex flex-wrap gap-2">
+                <span 
+                  v-for="keyword in analysisResults.missingKeywords" 
+                  :key="keyword"
+                  class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm flex items-center group relative"
+                >
+                  {{ keyword }}
+                  <span class="ml-2 cursor-pointer hover:text-yellow-600" @click="copyKeyword(keyword)">📋</span>
+                  <span class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap transition-opacity">
+                    Cliquer pour copier
+                  </span>
+                </span>
               </div>
             </div>
           </div>
 
-          <!-- Analyse des mots-clés -->
-          <div class="mb-8">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-xl font-semibold text-gray-700">Analyse des mots-clés</h3>
-              <div class="flex gap-2">
-                <button
-                  @click="copyMissingKeywords"
-                  class="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200"
-                >
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                  </svg>
-                  Copier les mots-clés
-                </button>
-                <button
-                  @click="exportKeywords"
-                  class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                >
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Exporter l'analyse
-                </button>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <!-- Statistiques -->
-              <div class="bg-white p-6 rounded-lg shadow">
-                <h4 class="font-medium text-gray-800 mb-4">Vue d'ensemble</h4>
-                <div class="grid grid-cols-3 gap-4">
-                  <div class="text-center p-4 bg-blue-50 rounded-lg">
-                    <div class="text-2xl font-bold text-blue-600">{{ analysisResults.topKeywords.length }}</div>
-                    <div class="text-sm text-gray-600">Total</div>
-                  </div>
-                  <div class="text-center p-4 bg-green-50 rounded-lg">
-                    <div class="text-2xl font-bold text-green-600">{{ analysisResults.presentKeywords.length }}</div>
-                    <div class="text-sm text-gray-600">Présents</div>
-                  </div>
-                  <div class="text-center p-4 bg-yellow-50 rounded-lg">
-                    <div class="text-2xl font-bold text-yellow-600">{{ analysisResults.missingKeywords.length }}</div>
-                    <div class="text-sm text-gray-600">Manquants</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Mots-clés manquants -->
-              <div class="bg-yellow-50 p-6 rounded-lg">
-                <h4 class="font-medium text-yellow-800 mb-4 flex items-center">
-                  <span class="text-xl mr-2">⚠️</span>
-                  Mots-clés manquants prioritaires
-                </h4>
+          <!-- Suggestions de formulation -->
+          <div class="bg-white p-6 rounded-lg shadow">
+            <h4 class="font-medium text-gray-800 mb-4">Suggestions de formulation alternatives</h4>
+            <div class="space-y-4">
+              <div 
+                v-for="(alternatives, keyword) in analysisResults.keywordSuggestions" 
+                :key="keyword"
+                class="bg-gray-50 p-4 rounded-lg"
+              >
+                <div class="font-medium text-gray-700 mb-2">{{ keyword }}</div>
                 <div class="flex flex-wrap gap-2">
                   <span 
-                    v-for="keyword in analysisResults.missingKeywords" 
-                    :key="keyword"
-                    class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm flex items-center group relative"
+                    v-for="(alt, index) in alternatives" 
+                    :key="index"
+                    class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-blue-200 transition-colors duration-200"
+                    @click="copyKeyword(alt)"
                   >
-                    {{ keyword }}
-                    <span class="ml-2 cursor-pointer hover:text-yellow-600" @click="copyKeyword(keyword)">📋</span>
-                    <span class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap transition-opacity">
-                      Cliquer pour copier
-                    </span>
+                    {{ alt }}
                   </span>
                 </div>
               </div>
             </div>
-
-            <!-- Suggestions de formulation -->
-            <div class="bg-white p-6 rounded-lg shadow">
-              <h4 class="font-medium text-gray-800 mb-4">Suggestions de formulation alternatives</h4>
-              <div class="space-y-4">
-                <div 
-                  v-for="(alternatives, keyword) in analysisResults.keywordSuggestions" 
-                  :key="keyword"
-                  class="bg-gray-50 p-4 rounded-lg"
-                >
-                  <div class="font-medium text-gray-700 mb-2">{{ keyword }}</div>
-                  <div class="flex flex-wrap gap-2">
-                    <span 
-                      v-for="(alt, index) in alternatives" 
-                      :key="index"
-                      class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-blue-200 transition-colors duration-200"
-                      @click="copyKeyword(alt)"
-                    >
-                      {{ alt }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
+        </div>
 
-          <!-- Scores d'évaluation -->
-          <div class="mb-8">
-            <h3 class="text-xl font-semibold text-gray-700 mb-4">Scores d'évaluation</h3>
-            <div class="bg-white rounded-lg shadow overflow-hidden">
-              <table class="min-w-full">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Critère</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Note sur 5</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Barre de progression</th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="(score, criterion) in analysisResults.scores" :key="criterion">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {{ criterion.charAt(0).toUpperCase() + criterion.slice(1).replace('_', ' ') }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {{ score.toFixed(1) }}/5
-                    </td>
-                    <td class="px-6 py-4">
-                      <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-blue-600 h-2.5 rounded-full" 
-                             :style="{ width: `${(score/5)*100}%` }"
-                             :class="{
-                               'bg-red-600': score < 2.5,
-                               'bg-yellow-600': score >= 2.5 && score < 3.5,
-                               'bg-green-600': score >= 3.5
-                             }">
-                        </div>
+        <!-- Scores d'évaluation -->
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold text-gray-700 mb-4">Scores d'évaluation</h3>
+          <div class="bg-white rounded-lg shadow overflow-hidden">
+            <table class="min-w-full">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Critère</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Note sur 5</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Barre de progression</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="(score, criterion) in analysisResults.scores" :key="criterion">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {{ criterion.charAt(0).toUpperCase() + criterion.slice(1).replace('_', ' ') }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {{ score.toFixed(1) }}/5
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                      <div class="bg-blue-600 h-2.5 rounded-full" 
+                           :style="{ width: `${(score/5)*100}%` }"
+                           :class="{
+                             'bg-red-600': score < 2.5,
+                             'bg-yellow-600': score >= 2.5 && score < 3.5,
+                             'bg-green-600': score >= 3.5
+                           }">
                       </div>
-                    </td>
-                  </tr>
-                  <!-- Score total -->
-                  <tr class="bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Score Total</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">
-                      {{ analysisResults.totalScore.toFixed(1) }}/20
-                    </td>
-                    <td class="px-6 py-4">
-                      <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-blue-600 h-2.5 rounded-full" 
-                             :style="{ width: `${(analysisResults.totalScore/20)*100}%` }"
-                             :class="{
-                               'bg-red-600': analysisResults.totalScore < 10,
-                               'bg-yellow-600': analysisResults.totalScore >= 10 && analysisResults.totalScore < 14,
-                               'bg-green-600': analysisResults.totalScore >= 14
-                             }">
-                        </div>
+                    </div>
+                  </td>
+                </tr>
+                <!-- Score total -->
+                <tr class="bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Score Total</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-bold">
+                    {{ analysisResults.totalScore.toFixed(1) }}/20
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                      <div class="bg-blue-600 h-2.5 rounded-full" 
+                           :style="{ width: `${(analysisResults.totalScore/20)*100}%` }"
+                           :class="{
+                             'bg-red-600': analysisResults.totalScore < 10,
+                             'bg-yellow-600': analysisResults.totalScore >= 10 && analysisResults.totalScore < 14,
+                             'bg-green-600': analysisResults.totalScore >= 14
+                           }">
                       </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
+        </div>
 
-          <!-- Points forts et améliorations -->
-          <div class="mb-8">
-            <h3 class="text-xl font-semibold text-gray-700 mb-4">Analyse du contenu</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Points forts -->
-              <div class="bg-green-50 p-6 rounded-lg">
-                <h4 class="font-medium text-green-800 mb-4 flex items-center">
-                  <span class="text-xl mr-2">💪</span>
-                  Points forts
-                </h4>
-                <ul class="space-y-2">
-                  <li 
-                    v-for="(point, index) in analysisResults.contentFeedback.points_forts" 
-                    :key="index"
-                    class="flex items-start"
-                  >
-                    <span class="text-green-600 mr-2">✓</span>
-                    <span class="text-green-900">{{ point }}</span>
-                  </li>
-                </ul>
-              </div>
-
-              <!-- Points d'amélioration -->
-              <div class="bg-yellow-50 p-6 rounded-lg">
-                <h4 class="font-medium text-yellow-800 mb-4 flex items-center">
-                  <span class="text-xl mr-2">💡</span>
-                  Suggestions d'amélioration
-                </h4>
-                <ul class="space-y-2">
-                  <li 
-                    v-for="(point, index) in analysisResults.contentFeedback.points_amelioration" 
-                    :key="index"
-                    class="flex items-start"
-                  >
-                    <span class="text-yellow-600 mr-2">→</span>
-                    <span class="text-yellow-900">{{ point }}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- Section de compatibilité - affichée uniquement si une offre est fournie -->
-          <div v-if="analysisResults.jobMatch && jobOffer" class="mb-8">
-            <h3 class="text-xl font-semibold text-gray-700 mb-4">Compatibilité avec l'offre</h3>
-            
-            <!-- Scores de compatibilité -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div class="bg-white p-4 rounded-lg shadow">
-                <div class="text-2xl font-bold text-blue-600 mb-1">{{ analysisResults.jobMatch.score }}%</div>
-                <div class="text-sm text-gray-600">Score global</div>
-              </div>
-              <div class="bg-white p-4 rounded-lg shadow">
-                <div class="text-2xl font-bold text-green-600 mb-1">{{ analysisResults.jobMatch.technicalMatch }}%</div>
-                <div class="text-sm text-gray-600">Technique</div>
-              </div>
-              <div class="bg-white p-4 rounded-lg shadow">
-                <div class="text-2xl font-bold text-purple-600 mb-1">{{ analysisResults.jobMatch.experienceMatch }}%</div>
-                <div class="text-sm text-gray-600">Expérience</div>
-              </div>
-              <div class="bg-white p-4 rounded-lg shadow">
-                <div class="text-2xl font-bold text-indigo-600 mb-1">{{ analysisResults.jobMatch.softSkillsMatch }}%</div>
-                <div class="text-sm text-gray-600">Soft Skills</div>
-              </div>
-            </div>
-
-            <!-- Analyse détaillée -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Points forts -->
-              <div class="bg-green-50 p-6 rounded-lg">
-                <h4 class="font-medium text-green-800 mb-4 flex items-center">
-                  <span class="text-xl mr-2">💪</span>
-                  Points forts
-                </h4>
-                <ul class="space-y-2">
-                  <li 
-                    v-for="(strength, index) in analysisResults.jobMatch.strengths" 
-                    :key="index"
-                    class="flex items-start"
-                  >
-                    <span class="text-green-600 mr-2">✓</span>
-                    <span class="text-green-900">{{ strength }}</span>
-                  </li>
-                </ul>
-              </div>
-
-              <!-- Écarts -->
-              <div class="bg-yellow-50 p-6 rounded-lg">
-                <h4 class="font-medium text-yellow-800 mb-4 flex items-center">
-                  <span class="text-xl mr-2">⚠️</span>
-                  Points à améliorer
-                </h4>
-                <ul class="space-y-2">
-                  <li 
-                    v-for="(gap, index) in analysisResults.jobMatch.gaps" 
-                    :key="index"
-                    class="flex items-start"
-                  >
-                    <span class="text-yellow-600 mr-2">→</span>
-                    <span class="text-yellow-900">{{ gap }}</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Recommandations -->
-            <div class="mt-6 bg-blue-50 p-6 rounded-lg">
-              <h4 class="font-medium text-blue-800 mb-4 flex items-center">
-                <span class="text-xl mr-2">💡</span>
-                Recommandations pour cette offre
+        <!-- Points forts et améliorations -->
+        <div class="mb-8">
+          <h3 class="text-xl font-semibold text-gray-700 mb-4">Analyse du contenu</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Points forts -->
+            <div class="bg-green-50 p-6 rounded-lg">
+              <h4 class="font-medium text-green-800 mb-4 flex items-center">
+                <span class="text-xl mr-2">💪</span>
+                Points forts
               </h4>
               <ul class="space-y-2">
                 <li 
-                  v-for="(rec, index) in analysisResults.jobMatch.recommendations" 
+                  v-for="(point, index) in analysisResults.contentFeedback.points_forts" 
                   :key="index"
                   class="flex items-start"
                 >
-                  <span class="text-blue-600 mr-2">•</span>
-                  <span class="text-blue-900">{{ rec }}</span>
+                  <span class="text-green-600 mr-2">✓</span>
+                  <span class="text-green-900">{{ point }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Points d'amélioration -->
+            <div class="bg-yellow-50 p-6 rounded-lg">
+              <h4 class="font-medium text-yellow-800 mb-4 flex items-center">
+                <span class="text-xl mr-2">💡</span>
+                Suggestions d'amélioration
+              </h4>
+              <ul class="space-y-2">
+                <li 
+                  v-for="(point, index) in analysisResults.contentFeedback.points_amelioration" 
+                  :key="index"
+                  class="flex items-start"
+                >
+                  <span class="text-yellow-600 mr-2">→</span>
+                  <span class="text-yellow-900">{{ point }}</span>
                 </li>
               </ul>
             </div>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-white p-6 rounded-xl shadow-md">
-            <div class="text-blue-600 text-2xl mb-3">🎯</div>
-            <h3 class="text-lg font-semibold mb-2">Analyse ATS</h3>
-            <p class="text-gray-600">Vérification de la compatibilité avec les systèmes de recrutement</p>
-          </div>
+        <!-- Section de compatibilité - affichée uniquement si une offre est fournie -->
+        <div v-if="analysisResults.jobMatch && jobOffer" class="mb-8">
+          <h3 class="text-xl font-semibold text-gray-700 mb-4">Compatibilité avec l'offre</h3>
           
-          <div class="bg-white p-6 rounded-xl shadow-md">
-            <div class="text-blue-600 text-2xl mb-3">💡</div>
-            <h3 class="text-lg font-semibold mb-2">Recommandations</h3>
-            <p class="text-gray-600">Suggestions d'amélioration personnalisées</p>
+          <!-- Scores de compatibilité -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-lg shadow">
+              <div class="text-2xl font-bold text-blue-600 mb-1">{{ analysisResults.jobMatch.score }}%</div>
+              <div class="text-sm text-gray-600">Score global</div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+              <div class="text-2xl font-bold text-green-600 mb-1">{{ analysisResults.jobMatch.technicalMatch }}%</div>
+              <div class="text-sm text-gray-600">Technique</div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+              <div class="text-2xl font-bold text-purple-600 mb-1">{{ analysisResults.jobMatch.experienceMatch }}%</div>
+              <div class="text-sm text-gray-600">Expérience</div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow">
+              <div class="text-2xl font-bold text-indigo-600 mb-1">{{ analysisResults.jobMatch.softSkillsMatch }}%</div>
+              <div class="text-sm text-gray-600">Soft Skills</div>
+            </div>
           </div>
-          
-          <div class="bg-white p-6 rounded-xl shadow-md">
-            <div class="text-blue-600 text-2xl mb-3">⚡</div>
-            <h3 class="text-lg font-semibold mb-2">Instantané</h3>
-            <p class="text-gray-600">Résultats en quelques secondes</p>
+
+          <!-- Analyse détaillée -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Points forts -->
+            <div class="bg-green-50 p-6 rounded-lg">
+              <h4 class="font-medium text-green-800 mb-4 flex items-center">
+                <span class="text-xl mr-2">💪</span>
+                Points forts
+              </h4>
+              <ul class="space-y-2">
+                <li 
+                  v-for="(strength, index) in analysisResults.jobMatch.strengths" 
+                  :key="index"
+                  class="flex items-start"
+                >
+                  <span class="text-green-600 mr-2">✓</span>
+                  <span class="text-green-900">{{ strength }}</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- Écarts -->
+            <div class="bg-yellow-50 p-6 rounded-lg">
+              <h4 class="font-medium text-yellow-800 mb-4 flex items-center">
+                <span class="text-xl mr-2">⚠️</span>
+                Points à améliorer
+              </h4>
+              <ul class="space-y-2">
+                <li 
+                  v-for="(gap, index) in analysisResults.jobMatch.gaps" 
+                  :key="index"
+                  class="flex items-start"
+                >
+                  <span class="text-yellow-600 mr-2">→</span>
+                  <span class="text-yellow-900">{{ gap }}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Recommandations -->
+          <div class="mt-6 bg-blue-50 p-6 rounded-lg">
+            <h4 class="font-medium text-blue-800 mb-4 flex items-center">
+              <span class="text-xl mr-2">💡</span>
+              Recommandations pour cette offre
+            </h4>
+            <ul class="space-y-2">
+              <li 
+                v-for="(rec, index) in analysisResults.jobMatch.recommendations" 
+                :key="index"
+                class="flex items-start"
+              >
+                <span class="text-blue-600 mr-2">•</span>
+                <span class="text-blue-900">{{ rec }}</span>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
+
+      <!-- Built with section -->
+      <div class="py-16 border-t">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center">
+            <p class="text-sm text-gray-500 mb-6">DÉVELOPPÉ AVEC CES OUTILS</p>
+            <div class="flex justify-center items-center space-x-12">
+              <a 
+                href="https://groq.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+              >
+                <img src="/groq-logo.svg" alt="Groq" class="h-8">
+              </a>
+              <a 
+                href="https://ai.meta.com/llama/" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+              >
+                <img src="/llama-logo.svg" alt="LLaMA" class="h-8">
+              </a>
+              <a 
+                href="https://nuxt.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+              >
+                <img src="/nuxt-logo.svg" alt="Nuxt" class="h-8">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800 mt-16">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <!-- À propos -->
+            <div>
+              <h3 class="text-gray-900 dark:text-white font-semibold mb-4">À propos</h3>
+              <p class="text-gray-600 dark:text-gray-400 text-sm">
+                CV ATS Optimizer vous aide à optimiser votre CV pour les systèmes de suivi des candidatures (ATS) grâce à l'intelligence artificielle.
+              </p>
+            </div>
+            
+            <!-- Créateur -->
+            <div>
+              <h3 class="text-gray-900 dark:text-white font-semibold mb-4">Créateur</h3>
+              <div class="text-gray-600 space-y-2">
+                <p>Développé par Massyl OUADDOUR</p>
+                <div class="flex space-x-4">
+                  <a 
+                    href="https://www.linkedin.com/in/massylouaddour/" 
+                    target="_blank"
+                    rel="noopener noreferrer" 
+                    class="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center"
+                  >
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                    LinkedIn
+                  </a>
+                  <a 
+                    href="https://masoddr.github.io/portfolio_massyl/" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-gray-600 hover:text-blue-600 transition-colors duration-200 flex items-center"
+                  >
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                    </svg>
+                    Portfolio
+                  </a>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Liens utiles -->
+            <div>
+              <h3 class="text-gray-900 dark:text-white font-semibold mb-4">Liens utiles</h3>
+              <ul class="space-y-2">
+                <li>
+                  <NuxtLink to="/guide" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
+                    Guide d'utilisation
+                  </NuxtLink>
+                </li>
+                <li>
+                  <NuxtLink to="/faq" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
+                    FAQ
+                  </NuxtLink>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- Légal -->
+            <div>
+              <h3 class="text-gray-900 dark:text-white font-semibold mb-4">Informations légales</h3>
+              <ul class="space-y-2">
+                <li>
+                  <NuxtLink to="/cgu" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
+                    Conditions générales d'utilisation
+                  </NuxtLink>
+                </li>
+                <li>
+                  <NuxtLink to="/privacy" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
+                    Politique de confidentialité
+                  </NuxtLink>
+                </li>
+                <li>
+                  <NuxtLink to="/legal" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
+                    Mentions légales
+                  </NuxtLink>
+                </li>
+              </ul>
+            </div>
+            
+            <!-- Contact -->
+            <div>
+              <h3 class="text-gray-900 dark:text-white font-semibold mb-4">Contact</h3>
+              <div class="space-y-2">
+                <NuxtLink 
+                  to="/contact" 
+                  class="text-gray-600 hover:text-blue-600 transition-colors duration-200 block"
+                >
+                  Formulaire de contact
+                </NuxtLink>
+                <a 
+                  href="mailto:ouaddour.massyl@gmail.com"
+                  class="text-gray-600 hover:text-blue-600 transition-colors duration-200 block"
+                >
+                  ouaddour.massyl@gmail.com
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Copyright -->
+          <div class="border-t border-gray-200 mt-8 pt-8 text-center">
+            <p class="text-gray-500 text-sm">
+              © {{ new Date().getFullYear() }} CV ATS Optimizer. Tous droits réservés.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
     <Toast v-bind="toast" />
     <ProgressSteps 
       :steps="steps"
       :currentStep="currentStep"
     />
-
-    <!-- Footer -->
-    <footer class="bg-gray-50 border-t border-gray-200 mt-16">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <!-- À propos -->
-          <div>
-            <h3 class="text-gray-900 font-semibold mb-4">À propos</h3>
-            <p class="text-gray-600 text-sm">
-              CV ATS Optimizer vous aide à optimiser votre CV pour les systèmes de suivi des candidatures (ATS) grâce à l'intelligence artificielle.
-            </p>
-          </div>
-          
-          <!-- Liens utiles -->
-          <div>
-            <h3 class="text-gray-900 font-semibold mb-4">Liens utiles</h3>
-            <ul class="space-y-2">
-              <li>
-                <NuxtLink to="/guide" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
-                  Guide d'utilisation
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/faq" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
-                  FAQ
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
-          
-          <!-- Légal -->
-          <div>
-            <h3 class="text-gray-900 font-semibold mb-4">Informations légales</h3>
-            <ul class="space-y-2">
-              <li>
-                <NuxtLink to="/cgu" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
-                  Conditions générales d'utilisation
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/privacy" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
-                  Politique de confidentialité
-                </NuxtLink>
-              </li>
-              <li>
-                <NuxtLink to="/legal" class="text-gray-600 hover:text-blue-600 text-sm transition-colors duration-200">
-                  Mentions légales
-                </NuxtLink>
-              </li>
-            </ul>
-          </div>
-          
-          <!-- Contact -->
-          <div>
-            <h3 class="text-gray-900 font-semibold mb-4">Contact</h3>
-            <!-- Formulaire de contact -->
-            <form @submit.prevent="sendContactForm" class="space-y-4">
-              <div>
-                <input
-                  v-model="contactForm.name"
-                  type="text"
-                  placeholder="Votre nom"
-                  class="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
-                <input
-                  v-model="contactForm.email"
-                  type="email"
-                  placeholder="Votre email"
-                  class="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
-              </div>
-              <div>
-                <textarea
-                  v-model="contactForm.message"
-                  placeholder="Votre message"
-                  rows="3"
-                  class="w-full px-4 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                  required
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                :disabled="isSubmitting"
-                class="w-full px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50"
-              >
-                {{ isSubmitting ? 'Envoi...' : 'Envoyer' }}
-              </button>
-            </form>
-
-            <!-- Informations de contact -->
-            <div class="mt-4 space-y-2">
-              <li class="flex items-center text-gray-600 text-sm">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <a href="mailto:ouaddour.massyl@gmail.com" class="hover:text-blue-600 transition-colors duration-200">
-                  ouaddour.massyl@gmail.com
-                </a>
-              </li>
-              <li class="flex items-center text-gray-600 text-sm">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                Toulouse, France
-              </li>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Copyright -->
-        <div class="border-t border-gray-200 mt-8 pt-8 text-center">
-          <p class="text-gray-500 text-sm">
-            © {{ new Date().getFullYear() }} CV ATS Optimizer. Tous droits réservés.
-          </p>
-        </div>
-      </div>
-    </footer>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import Toast from '~/components/Toast.vue'
 import ProgressSteps from '~/components/ProgressSteps.vue'
 
@@ -656,13 +866,6 @@ const toast = ref({
   type: 'info',
   message: ''
 })
-
-const showToast = (type, message) => {
-  toast.value = { isVisible: true, type, message }
-  setTimeout(() => {
-    toast.value.isVisible = false
-  }, 3000)
-}
 
 const steps = [
   'Import du CV',
@@ -728,7 +931,6 @@ const analyzeCV = async () => {
       console.log('Offre d\'emploi ajoutée')
     }
 
-    console.log('Envoi de la requête à:', 'http://localhost:8000/analyze-cv')
     const response = await fetch('http://localhost:8000/analyze-cv', {
       method: 'POST',
       headers: {
@@ -736,15 +938,29 @@ const analyzeCV = async () => {
         'Origin': window.location.origin
       },
       body: formData,
-      credentials: 'include'  // Ajout pour les cookies si nécessaire
+      credentials: 'include'
     })
-
-    console.log('Statut de la réponse:', response.status)
-    console.log('Headers de la réponse:', Object.fromEntries(response.headers))
 
     if (!response.ok) {
       const error = await response.json()
-      console.error('Erreur serveur:', error)
+      if (response.status === 429) {
+        // Extraction du temps d'attente du message d'erreur
+        const waitTimeMatch = error.detail.match(/try again in (\d+)m(\d+\.\d+)s/)
+        if (waitTimeMatch) {
+          const minutes = parseInt(waitTimeMatch[1])
+          const seconds = Math.round(parseFloat(waitTimeMatch[2]))
+          showToast(
+            'error',
+            `Service temporairement indisponible. Veuillez réessayer dans ${minutes} minutes et ${seconds} secondes.`
+          )
+        } else {
+          showToast(
+            'error',
+            'Service temporairement indisponible. Veuillez réessayer dans quelques minutes.'
+          )
+        }
+        return
+      }
       throw new Error(error.detail || 'Erreur lors de l\'analyse')
     }
 
@@ -756,9 +972,10 @@ const analyzeCV = async () => {
 
   } catch (error) {
     console.error('Erreur détaillée:', error)
-    showToast('error', 'Une erreur est survenue lors de l\'analyse')
+    showToast('error', error.message || 'Une erreur est survenue lors de l\'analyse. Veuillez réessayer.')
   } finally {
     isAnalyzing.value = false
+    currentStep.value = 0
     console.log('Fin de l\'analyse')
   }
 }
@@ -885,6 +1102,44 @@ const sendContactForm = async () => {
   } finally {
     isSubmitting.value = false
   }
+}
+
+const scrollToAnalysis = () => {
+  const analysisSection = document.getElementById('analysis-section')
+  if (analysisSection) {
+    analysisSection.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    })
+  }
+}
+
+// État pour le thème et la langue
+const isDarkMode = ref(false)
+const locale = ref('fr')
+
+// Initialisation du thème au chargement
+onMounted(() => {
+  // Vérifier la préférence sauvegardée
+  const savedTheme = localStorage.getItem('theme')
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    isDarkMode.value = true
+    document.documentElement.classList.add('dark')
+  }
+})
+
+const toggleDarkMode = () => {
+  isDarkMode.value = !isDarkMode.value
+  // Appliquer la classe dark au document
+  document.documentElement.classList.toggle('dark', isDarkMode.value)
+  // Sauvegarder la préférence
+  localStorage.setItem('theme', isDarkMode.value ? 'dark' : 'light')
+}
+
+// Méthode pour changer la langue
+const switchLanguage = (lang) => {
+  locale.value = lang
+  // Ici, vous pouvez ajouter la logique pour changer la langue de l'application
 }
 </script>
 
