@@ -90,7 +90,7 @@ async def analyze_cv(
         raise HTTPException(status_code=400, detail="CV content is required")
 
     # Définition du template pour jobMatch
-    job_match_template = """{{
+    job_match_template = 'null' if not job_offer else '''{
         "score": 85.5,
         "technicalMatch": 90.0,
         "experienceMatch": 80.0,
@@ -107,17 +107,19 @@ async def analyze_cv(
             "Mettre en avant votre expérience DevOps",
             "Obtenir une certification AWS/Azure"
         ]
-    }}""" if job_offer else "null"
+    }'''
 
-    # Construction du prompt
-    prompt = f"""Tu es un expert ATS qui analyse les CV. Fais une analyse approfondie de ce CV{' et sa compatibilité avec l\'offre d\'emploi' if job_offer else ''}.
+    # Construction du prompt en plusieurs parties
+    compatibility_text = ' et sa compatibilité avec l\'offre d\'emploi' if job_offer else ''
+    prompt_header = f"Tu es un expert ATS qui analyse les CV. Fais une analyse approfondie de ce CV{compatibility_text}.\n\n"
+    prompt_header += "CV à analyser :\n"
+    prompt_header += cv_text + "\n\n"
+    
+    if job_offer:
+        prompt_header += "Offre d'emploi à analyser :\n"
+        prompt_header += job_offer + "\n\n"
 
-CV à analyser :
-{cv_text}
-
-{f'Offre d\'emploi à analyser :\n{job_offer}\n' if job_offer else ''}
-
-Réalise l'analyse suivante :
+    prompt_instructions = """Réalise l'analyse suivante :
 
 1. MOTS-CLÉS (40 mots-clés essentiels)
    - Liste les 40 mots-clés les plus importants pour ce type de poste
@@ -140,52 +142,63 @@ Réalise l'analyse suivante :
    - Évalue la pertinence des expériences décrites
    - Vérifie la présence de résultats quantifiables
    - Analyse l'utilisation de verbes d'action
-   - Identifie les réalisations clés
+   - Identifie les réalisations clés"""
 
-{'''5. ANALYSE DE COMPATIBILITÉ AVEC L'OFFRE
+    prompt_compatibility = """5. ANALYSE DE COMPATIBILITÉ AVEC L'OFFRE
    - Évalue la correspondance technique (technologies, outils)
    - Analyse l'adéquation de l'expérience
    - Vérifie la correspondance des soft skills
    - Identifie les points forts et les écarts
-   - Propose des recommandations spécifiques''' if job_offer else '5. NOTATION DÉTAILLÉE'}
+   - Propose des recommandations spécifiques""" if job_offer else "5. NOTATION DÉTAILLÉE"
 
+    prompt_important = """
 IMPORTANT : 
 - Le score total doit être sur 20 points maximum
 - Chaque score individuel doit être sur 5 points maximum
-- Les scores de compatibilité doivent être en pourcentage (0-100%)
+- Les scores de compatibilité doivent être en pourcentage (0-100%)"""
 
-Format STRICT de réponse :
-{{
-    "hasTitle": true,
-    "titleFeedback": "Le titre est clair et bien visible",
-    "hasGoodStructure": true,
-    "structureFeedback": "La structure est bien organisée",
-    "topKeywords": ["mot1", "mot2", "mot3"],
-    "presentKeywords": ["mot1", "mot3"],
-    "missingKeywords": ["mot2", "mot4"],
-    "keywordSuggestions": {{
-        "mot_manquant1": ["alternative1", "alternative2"],
-        "mot_manquant2": ["alternative1", "alternative2"]
-    }},
-    "alerts": [
-        "Attention aux abréviations",
-        "Suggestion d'amélioration 1"
-    ],
-    "contentFeedback": {{
-        "points_forts": ["point1", "point2", "point3"],
-        "points_amelioration": ["suggestion1", "suggestion2"]
-    }},
-    "optimizedVersion": "Version optimisée du CV\\n avec des retours à la ligne\\n",
-    "scores": {{
-        "titre": 4.5,        # Sur 5 maximum
-        "structure": 4.0,    # Sur 5 maximum
-        "mots_cles": 3.5,    # Sur 5 maximum
-        "lisibilite": 4.0,   # Sur 5 maximum
-        "impact_contenu": 4.2 # Sur 5 maximum
-    }},
-    "totalScore": 16.0,      # Sur 20 maximum
-    "jobMatch": {job_match_template}
-}}"""
+    response_format = {
+        "hasTitle": True,
+        "titleFeedback": "Le titre est clair et bien visible",
+        "hasGoodStructure": True,
+        "structureFeedback": "La structure est bien organisée",
+        "topKeywords": ["mot1", "mot2", "mot3"],
+        "presentKeywords": ["mot1", "mot3"],
+        "missingKeywords": ["mot2", "mot4"],
+        "keywordSuggestions": {
+            "mot_manquant1": ["alternative1", "alternative2"],
+            "mot_manquant2": ["alternative1", "alternative2"]
+        },
+        "alerts": [
+            "Attention aux abréviations",
+            "Suggestion d'amélioration 1"
+        ],
+        "contentFeedback": {
+            "points_forts": ["point1", "point2", "point3"],
+            "points_amelioration": ["suggestion1", "suggestion2"]
+        },
+        "optimizedVersion": "Version optimisée du CV\n avec des retours à la ligne\n",
+        "scores": {
+            "titre": 4.5,
+            "structure": 4.0,
+            "mots_cles": 3.5,
+            "lisibilite": 4.0,
+            "impact_contenu": 4.2
+        },
+        "totalScore": 16.0,
+        "jobMatch": json.loads(job_match_template)
+    }
+
+    prompt_format = f"\nFormat STRICT de réponse :\n{json.dumps(response_format, indent=2, ensure_ascii=False)}"
+
+    # Assemblage du prompt final
+    prompt = "\n".join([
+        prompt_header,
+        prompt_instructions,
+        prompt_compatibility,
+        prompt_important,
+        prompt_format
+    ])
 
     try:
         # Appel à l'API via le client OpenAI
