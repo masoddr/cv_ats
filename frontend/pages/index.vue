@@ -97,12 +97,19 @@
           </div>
         </div>
 
-        <h1 class="text-4xl md:text-7xl font-bold mb-8 text-gray-900 dark:text-white">
-          Votre CV optimisé pour les 
-          <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            ATS
-          </span>
+        <h1 class="text-4xl font-bold text-center mb-4">
+          Optimisez votre CV avec l'IA
         </h1>
+        <p class="text-xl text-center mb-8">
+          Analysez et améliorez votre CV instantanément avec notre IA experte
+          ✨ Gratuit et sans inscription
+        </p>
+        <div class="text-center text-lg space-y-2 mb-8">
+          <p>🎯 Obtenez des suggestions personnalisées pour chaque section</p>
+          <p>🤖 Compatible avec les systèmes ATS des recruteurs</p>
+          <p>📊 Analyse détaillée des points forts et axes d'amélioration</p>
+          <p>⚡ Résultats en quelques secondes</p>
+        </div>
 
         <div class="inline-block px-4 py-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-100 dark:border-gray-700 rounded-full font-medium text-gray-600 dark:text-gray-300 mb-8">
           ✨ 100% Gratuit - Aucune inscription requise

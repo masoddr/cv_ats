@@ -9,6 +9,7 @@ import json
 from openai import OpenAI
 import logging
 from httpx import HTTPStatusError
+import re
 
 # Chargement des variables d'environnement
 load_dotenv()
@@ -89,26 +90,6 @@ async def analyze_cv(
     if not cv_text.strip():
         raise HTTPException(status_code=400, detail="CV content is required")
 
-    # Définition du template pour jobMatch
-    job_match_template = 'null' if not job_offer else '''{
-        "score": 85.5,
-        "technicalMatch": 90.0,
-        "experienceMatch": 80.0,
-        "softSkillsMatch": 85.0,
-        "strengths": [
-            "Expertise technique en accord avec les besoins",
-            "Expérience en management d'équipe"
-        ],
-        "gaps": [
-            "Pas d'expérience mentionnée avec Kubernetes",
-            "Certification cloud manquante"
-        ],
-        "recommendations": [
-            "Mettre en avant votre expérience DevOps",
-            "Obtenir une certification AWS/Azure"
-        ]
-    }'''
-
     # Construction du prompt en plusieurs parties
     compatibility_text = ' et sa compatibilité avec l\'offre d\'emploi' if job_offer else ''
     prompt_header = f"Tu es un expert ATS qui analyse les CV. Fais une analyse approfondie de ce CV{compatibility_text}.\n\n"
@@ -144,12 +125,21 @@ async def analyze_cv(
    - Analyse l'utilisation de verbes d'action
    - Identifie les réalisations clés"""
 
-    prompt_compatibility = """5. ANALYSE DE COMPATIBILITÉ AVEC L'OFFRE
-   - Évalue la correspondance technique (technologies, outils)
-   - Analyse l'adéquation de l'expérience
-   - Vérifie la correspondance des soft skills
-   - Identifie les points forts et les écarts
-   - Propose des recommandations spécifiques""" if job_offer else "5. NOTATION DÉTAILLÉE"
+    prompt_compatibility = """5. ANALYSE DÉTAILLÉE DE COMPATIBILITÉ AVEC L'OFFRE
+    - Calcule un score précis de correspondance technique en comparant les technologies et compétences requises
+    - Évalue le niveau d'expérience demandé vs celui du candidat
+    - Analyse la correspondance des soft skills mentionnés dans l'offre
+    - Identifie précisément :
+        * Les points forts qui correspondent exactement aux besoins
+        * Les écarts spécifiques entre le profil et les exigences
+        * Des recommandations concrètes basées sur les écarts identifiés
+    - Calcule des scores de compatibilité en pourcentage pour chaque aspect
+    
+    Les scores doivent être calculés ainsi :
+    - Score technique : % des compétences techniques requises présentes dans le CV
+    - Score expérience : % de correspondance entre l'expérience demandée et celle du candidat
+    - Score soft skills : % des soft skills requis présents dans le CV
+    - Score global : moyenne pondérée des trois scores précédents""" if job_offer else "5. NOTATION DÉTAILLÉE"
 
     prompt_important = """
 IMPORTANT : 
@@ -186,10 +176,21 @@ IMPORTANT :
             "impact_contenu": 4.2
         },
         "totalScore": 16.0,
-        "jobMatch": json.loads(job_match_template)
+        "jobMatch": {
+            "score": 0.0,
+            "technicalMatch": 0.0,
+            "experienceMatch": 0.0,
+            "softSkillsMatch": 0.0,
+            "strengths": [],
+            "gaps": [],
+            "recommendations": []
+        } if job_offer else None
     }
 
-    prompt_format = f"\nFormat STRICT de réponse :\n{json.dumps(response_format, indent=2, ensure_ascii=False)}"
+    # Modification du prompt_format pour être plus explicite
+    prompt_format = """
+    \nVoici un exemple de la structure JSON attendue (les valeurs sont des exemples, calcule tes propres valeurs basées sur ton analyse) :
+    """ + f"\n{json.dumps(response_format, indent=2, ensure_ascii=False)}"
 
     # Assemblage du prompt final
     prompt = "\n".join([
@@ -206,7 +207,14 @@ IMPORTANT :
             model="llama-3.3-70b-versatile",
             messages=[{
                 "role": "system",
-                "content": "Tu es un expert ATS qui répond uniquement en JSON valide. La version optimisée du CV doit être une chaîne de caractères avec des retours à la ligne \\n."
+                "content": """Tu es un expert ATS qui répond uniquement en JSON valide. 
+                Pour l'analyse de compatibilité avec l'offre d'emploi :
+                - Compare minutieusement chaque exigence de l'offre avec le contenu du CV
+                - Calcule tes propres scores précis basés sur la présence réelle des éléments demandés
+                - Ne réutilise pas les valeurs d'exemple, fais ta propre analyse détaillée
+                - Identifie des écarts concrets et propose des recommandations spécifiques
+                - Assure-toi que chaque score et recommandation soit basé sur une analyse réelle du contenu
+                La version optimisée du CV doit être une chaîne de caractères avec des retours à la ligne \\n."""
             }, {
                 "role": "user",
                 "content": prompt
@@ -221,9 +229,15 @@ IMPORTANT :
         # Debug: afficher la réponse brute
         print("Réponse brute de l'API :", response_content)
         
-        # Nettoyage supplémentaire pour s'assurer que c'est du JSON valide
-        if response_content.startswith("```json"):
-            response_content = response_content.replace("```json", "").replace("```", "")
+        # Extraction du JSON de la réponse
+        json_match = re.search(r'```json\s*(.*?)\s*```', response_content, re.DOTALL)
+        if json_match:
+            response_content = json_match.group(1)
+        else:
+            # Si pas de balises json, on essaie de trouver directement un objet JSON
+            json_match = re.search(r'\{.*\}', response_content, re.DOTALL)
+            if json_match:
+                response_content = json_match.group(0)
         
         response_content = response_content.strip()
         
@@ -239,11 +253,17 @@ IMPORTANT :
                 for key in analysis_result["scores"]:
                     analysis_result["scores"][key] = min(5.0, float(analysis_result["scores"][key]))
 
-            # Vérification des scores de compatibilité seulement si jobMatch existe et n'est pas null
+            # Conversion des scores de compatibilité de décimal à pourcentage
             if job_offer and analysis_result.get("jobMatch"):
-                if isinstance(analysis_result["jobMatch"], (int, float)):
-                    # Si jobMatch est un nombre, le convertir en structure complète
-                    score = float(analysis_result["jobMatch"])
+                if isinstance(analysis_result["jobMatch"], dict):
+                    for key in ["score", "technicalMatch", "experienceMatch", "softSkillsMatch"]:
+                        if key in analysis_result["jobMatch"]:
+                            # Multiplication par 100 pour convertir en pourcentage
+                            value = float(analysis_result["jobMatch"][key]) * 100
+                            analysis_result["jobMatch"][key] = min(100.0, value)
+                elif isinstance(analysis_result["jobMatch"], (int, float)):
+                    # Si jobMatch est un nombre, le convertir en pourcentage
+                    score = float(analysis_result["jobMatch"]) * 100
                     analysis_result["jobMatch"] = {
                         "score": min(100.0, score),
                         "technicalMatch": min(100.0, score),
@@ -253,14 +273,6 @@ IMPORTANT :
                         "gaps": [],
                         "recommendations": []
                     }
-                elif isinstance(analysis_result["jobMatch"], dict):
-                    # Si jobMatch est un dictionnaire, limiter les scores à 100
-                    for key in ["score", "technicalMatch", "experienceMatch", "softSkillsMatch"]:
-                        if key in analysis_result["jobMatch"]:
-                            analysis_result["jobMatch"][key] = min(100.0, float(analysis_result["jobMatch"][key]))
-            else:
-                # Si pas d'offre d'emploi ou jobMatch est null
-                analysis_result["jobMatch"] = None
 
             # Autres vérifications...
             if not isinstance(analysis_result["optimizedVersion"], str):
