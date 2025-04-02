@@ -7,38 +7,12 @@
           <!-- Logo/Brand -->
           <div class="flex items-center">
             <a href="/" class="text-xl font-bold text-gray-900 dark:text-white">
-              CV ATS Optimizer
+              Optimise-ton-CV
             </a>
           </div>
 
           <!-- Navigation Items -->
           <div class="flex items-center space-x-4">
-            <!-- Language Switcher -->
-            <div class="flex items-center space-x-2 border-r border-gray-200 dark:border-gray-700 pr-4">
-              <button 
-                @click="switchLanguage('fr')"
-                :class="[
-                  'px-2 py-1 rounded-md text-sm font-medium transition-colors duration-200',
-                  locale === 'fr' 
-                    ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900' 
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                ]"
-              >
-                FR
-              </button>
-              <button 
-                @click="switchLanguage('en')"
-                :class="[
-                  'px-2 py-1 rounded-md text-sm font-medium transition-colors duration-200',
-                  locale === 'en' 
-                    ? 'bg-gray-900 text-white' 
-                    : 'text-gray-600 hover:text-gray-900'
-                ]"
-              >
-                EN
-              </button>
-            </div>
-
             <!-- Dark Mode Toggle -->
             <button 
               @click="toggleDarkMode"
@@ -83,65 +57,65 @@
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Hero Section -->
-      <div class="text-center flex flex-col justify-center py-16 md:py-20 dark:text-white">
-        <!-- New Badge -->
-        <div class="flex justify-center mb-8">
-          <div class="inline-flex items-center px-4 py-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-full shadow-sm border border-gray-100 dark:border-gray-700">
-            <span class="flex items-center text-orange-500 mr-2">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 2a1 1 0 0 1 .81.41l2.59 3.24a1 1 0 0 1-.04 1.32L10 12l-3.36-5.03a1 1 0 0 1-.04-1.32l2.59-3.24A1 1 0 0 1 10 2Z" />
-              </svg>
+      <div class="h-screen flex flex-col justify-center py-16 md:py-20 dark:text-white">
+        <div class="text-center flex-grow flex flex-col justify-center">
+          <p class="text-xl mb-8">
+            Analysez et améliorez instantanément votre CV pour les recruteurs et les ATS.
+            Simple, rapide et gratuit.
+          </p>
+
+          <h1 class="text-4xl md:text-7xl font-bold mb-8 text-gray-900 dark:text-white">
+            Optimisez votre CV avec
+            <span class="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              l'IA
             </span>
-            <span class="text-sm font-medium text-gray-800 dark:text-gray-100">New:</span>
-            <span class="ml-2 text-sm text-gray-600 dark:text-gray-300">Optimisez votre CV avec l'IA</span>
+          </h1>
+
+          <div class="inline-block px-4 py-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-100 dark:border-gray-700 rounded-full font-medium text-gray-600 dark:text-gray-300 mb-8">
+            ✨ 100% Gratuit - Aucune inscription requise
+          </div>
+
+          <!-- CTA Button -->
+          <div>
+            <button
+              @click="scrollToAnalysis"
+              class="group px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium text-lg transition-all duration-300 flex items-center justify-center mx-auto"
+            >
+              <span class="flex items-center justify-center group-hover:translate-x-1 transition-transform duration-300">
+                Commencer l'analyse
+                <svg 
+                  class="w-5 h-5 ml-2"
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round" 
+                    stroke-width="2" 
+                    d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                  />
+                </svg>
+              </span>
+            </button>
           </div>
         </div>
 
-        <h1 class="text-4xl font-bold text-center mb-4">
-          Optimisez votre CV avec l'IA
-        </h1>
-        <p class="text-xl text-center mb-8">
-          Analysez et améliorez votre CV instantanément avec notre IA experte
-          ✨ Gratuit et sans inscription
-        </p>
-        <div class="text-center text-lg space-y-2 mb-8">
-          <p>🎯 Obtenez des suggestions personnalisées pour chaque section</p>
-          <p>🤖 Compatible avec les systèmes ATS des recruteurs</p>
-          <p>📊 Analyse détaillée des points forts et axes d'amélioration</p>
-          <p>⚡ Résultats en quelques secondes</p>
-        </div>
-
-        <div class="inline-block px-4 py-2 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border border-gray-100 dark:border-gray-700 rounded-full font-medium text-gray-600 dark:text-gray-300 mb-8">
-          ✨ 100% Gratuit - Aucune inscription requise
-        </div>
-
-        <p class="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-16 max-w-2xl mx-auto leading-relaxed">
-          Notre IA analyse votre CV et vous guide pour maximiser vos chances face aux ATS (Applicant Tracking Systems) qui filtrent automatiquement les candidatures.
-        </p>
-
-        <!-- CTA Button -->
-        <div class="mb-24">
-          <button
-            @click="scrollToAnalysis"
-            class="group px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium text-lg transition-all duration-300 flex items-center justify-center mx-auto"
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <svg 
+            class="w-6 h-6 text-gray-400" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
           >
-            <span class="flex items-center justify-center group-hover:translate-x-1 transition-transform duration-300">
-              Commencer l'analyse
-              <svg 
-                class="w-5 h-5 ml-2"
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path 
-                  stroke-linecap="round" 
-                  stroke-linejoin="round" 
-                  stroke-width="2" 
-                  d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
-                />
-              </svg>
-            </span>
-          </button>
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+            />
+          </svg>
         </div>
       </div>
 
@@ -739,7 +713,7 @@
             <div>
               <h3 class="text-gray-900 dark:text-white font-semibold mb-4">À propos</h3>
               <p class="text-gray-600 dark:text-gray-400 text-sm">
-                CV ATS Optimizer vous aide à optimiser votre CV pour les systèmes de suivi des candidatures (ATS) grâce à l'intelligence artificielle.
+                Optimise-ton-CV vous aide à optimiser votre CV pour les systèmes de suivi des candidatures (ATS) grâce à l'intelligence artificielle.
               </p>
             </div>
             
@@ -837,7 +811,7 @@
           <!-- Copyright -->
           <div class="border-t border-gray-200 mt-8 pt-8 text-center">
             <p class="text-gray-500 text-sm">
-              © {{ new Date().getFullYear() }} CV ATS Optimizer. Tous droits réservés.
+              © {{ new Date().getFullYear() }} Optimise-ton-CV. Tous droits réservés.
             </p>
           </div>
         </div>
@@ -1089,7 +1063,7 @@ const sendContactForm = async () => {
   isSubmitting.value = true
   try {
     // Création du contenu de l'email avec mailto
-    const subject = `Contact CV ATS Optimizer - ${contactForm.value.name}`
+    const subject = `Contact Optimise-ton-CV- ${contactForm.value.name}`
     const body = `Message de : ${contactForm.value.name}\nEmail : ${contactForm.value.email}\n\n${contactForm.value.message}`
     const mailtoLink = `mailto:ouaddour.massyl@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
     

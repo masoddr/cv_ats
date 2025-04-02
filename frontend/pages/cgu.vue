@@ -16,7 +16,7 @@
       <div class="mb-12">
         <h2 class="text-2xl text-blue-600 mb-6">1. Objet</h2>
         <p class="bg-gray-50 p-4 rounded-lg text-gray-700">
-          Les présentes Conditions Générales d'Utilisation (ci-après "CGU") régissent l'utilisation du service CV ATS Optimizer 
+          Les présentes Conditions Générales d'Utilisation (ci-après "CGU") régissent l'utilisation du service Optimise-ton-CV
           (ci-après "le Service") accessible à l'adresse [votre-url].
         </p>
       </div>
@@ -24,7 +24,7 @@
       <div class="mb-12">
         <h2 class="text-2xl text-blue-600 mb-6">2. Description du service</h2>
         <p class="bg-gray-50 p-4 rounded-lg text-gray-700">
-          CV ATS Optimizer est un outil d'analyse de CV utilisant l'intelligence artificielle pour optimiser 
+          Optimise-ton-CVest un outil d'analyse de CV utilisant l'intelligence artificielle pour optimiser 
           la compatibilité avec les systèmes de suivi des candidatures (ATS).
         </p>
       </div>
@@ -54,7 +54,7 @@
 
       <h2>6. Limitation de responsabilité</h2>
       <p>
-        CV ATS Optimizer ne peut garantir l'exactitude absolue des analyses fournies. Le service est 
+        Optimise-ton-CVne peut garantir l'exactitude absolue des analyses fournies. Le service est 
         fourni "tel quel" sans garantie d'aucune sorte.
       </p>
 

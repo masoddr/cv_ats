@@ -16,7 +16,7 @@
       <div class="mb-12">
         <h2 class="text-2xl text-blue-600 mb-6">1. Éditeur du site</h2>
         <p class="bg-gray-50 p-4 rounded-lg text-gray-700">
-          CV ATS Optimizer<br>
+          Optimise-ton-CV<br>
           Développé par : Massyl OUADDOUR<br>
           Email : ouaddour.massyl@gmail.com<br>
           Adresse : Paris, France

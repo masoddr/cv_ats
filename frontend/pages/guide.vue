@@ -13,7 +13,7 @@
     <h1 class="text-4xl font-bold mb-12 text-center text-gray-800">Guide d'utilisation</h1>
     
     <div class="prose prose-blue max-w-none">
-      <h2 class="text-2xl text-blue-600 mb-8">Comment utiliser CV ATS Optimizer ?</h2>
+      <h2 class="text-2xl text-blue-600 mb-8">Comment utiliser Optimise-ton-CV?</h2>
       
       <div class="mb-12">
         <h3 class="text-xl text-gray-800 mb-4">1. Importation de votre CV</h3>

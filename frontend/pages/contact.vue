@@ -98,7 +98,7 @@ const isSubmitting = ref(false)
 const sendContactForm = async () => {
   isSubmitting.value = true
   try {
-    const subject = `Contact CV ATS Optimizer - ${contactForm.value.name}`
+    const subject = `Contact Optimise-ton-CV- ${contactForm.value.name}`
     const body = `Message de : ${contactForm.value.name}\nEmail : ${contactForm.value.email}\n\n${contactForm.value.message}`
     const mailtoLink = `mailto:ouaddour.massyl@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
     
